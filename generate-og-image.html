@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор іконок — Yarema Bus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; }
+        body { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; background: #f0f2f5; font-family: Montserrat, sans-serif; }
+        h1 { font-size: 22px; color: #1a3a5e; margin-bottom: 8px; }
+        .subtitle { color: #666; font-size: 13px; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-bottom: 30px; }
+        .card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); text-align: center; }
+        .card h3 { font-size: 14px; color: #1a3a5e; margin-bottom: 4px; }
+        .card p { font-size: 11px; color: #888; margin-bottom: 12px; }
+        .card canvas { border: 1px solid #e2e8f0; border-radius: 8px; max-width: 100%; }
+        .btn { display: inline-block; margin-top: 10px; padding: 10px 20px; font-size: 13px; font-weight: 700; background: #1a3a5e; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+        .btn:hover { background: #0d1f3c; }
+        .btn-all { padding: 16px 40px; font-size: 16px; background: #d90d0d; border-radius: 12px; }
+        .btn-all:hover { background: #b00b0b; }
+        .og-wrap { width: 100%; max-width: 1000px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); text-align: center; margin-bottom: 30px; }
+        .og-wrap canvas { max-width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .note { color: #888; font-size: 12px; margin-top: 20px; max-width: 600px; text-align: center; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<h1>Генератор іконок Yarema Bus</h1>
+<p class="subtitle">Натисни кнопку — скачаєш всі файли одразу</p>
+
+<div class="grid">
+    <div class="card">
+        <h3>icon-180.png</h3>
+        <p>Apple Touch Icon (iPhone)</p>
+        <canvas id="icon180" width="180" height="180"></canvas>
+        <br><button class="btn" onclick="dl('icon180','icon-180.png')">⬇ Скачати</button>
+    </div>
+    <div class="card">
+        <h3>icon-192.png</h3>
+        <p>Android / PWA іконка</p>
+        <canvas id="icon192" width="192" height="192"></canvas>
+        <br><button class="btn" onclick="dl('icon192','icon-192.png')">⬇ Скачати</button>
+    </div>
+    <div class="card">
+        <h3>icon-512.png</h3>
+        <p>PWA Splash / Store</p>
+        <canvas id="icon512" width="512" height="512"></canvas>
+        <br><button class="btn" onclick="dl('icon512','icon-512.png')">⬇ Скачати</button>
+    </div>
+</div>
+
+<div class="og-wrap">
+    <h3 style="margin-bottom:4px;">og-image.png</h3>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;">Прев'ю для Telegram / WhatsApp / Viber (1200×630)</p>
+    <canvas id="ogImage" width="1200" height="630"></canvas>
+    <br><button class="btn" onclick="dl('ogImage','og-image.png')" style="margin-top:12px;">⬇ Скачати</button>
+</div>
+
+<button class="btn btn-all" onclick="downloadAll()">⬇ Скачати всі файли</button>
+
+<p class="note">
+    Після завантаження — закинь всі файли на хостинг в папку з Pasanger_Yarema.html:<br>
+    <b>icon-180.png, icon-192.png, icon-512.png, og-image.png</b>
+</p>
+
+<script>
+// ── Іконка (квадратна) ──
+function drawIcon(canvasId, size) {
+    var c = document.getElementById(canvasId);
+    var ctx = c.getContext('2d');
+
+    // Фон — суцільний (RGB, без прозорості для iOS)
+    ctx.fillStyle = '#1a3a5e';
+    ctx.fillRect(0, 0, size, size);
+
+    // Заокруглені кути поверх (маска)
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, size, size, size * 0.18);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Автобус емодзі
+    ctx.font = (size * 0.32) + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🚐', size / 2, size * 0.35);
+
+    // YAREMA
+    ctx.fillStyle = 'white';
+    ctx.font = '800 ' + (size * 0.15) + 'px Montserrat, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('YAREMA', size / 2, size * 0.62);
+
+    // BUS
+    ctx.fillStyle = '#d90d0d';
+    ctx.font = '800 ' + (size * 0.12) + 'px Montserrat, Arial, sans-serif';
+    ctx.fillText('BUS', size / 2, size * 0.80);
+}
+
+// ── OG Image (1200×630) ──
+function drawOG() {
+    var c = document.getElementById('ogImage');
+    var ctx = c.getContext('2d');
+    var W = 1200, H = 630;
+
+    // Фон — градієнт
+    var grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#1a3a5e');
+    grad.addColorStop(1, '#0d1f3c');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Декоративні кола
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.arc(950, 100, 300, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(200, 550, 200, 0, Math.PI * 2); ctx.fill();
+
+    // Лінія зверху
+    ctx.fillStyle = '#d90d0d';
+    ctx.fillRect(0, 0, W, 6);
+
+    // Автобус емодзі
+    ctx.font = '120px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🚐', 600, 180);
+
+    // YAREMA
+    ctx.fillStyle = 'white';
+    ctx.font = '900 72px Montserrat, Arial, sans-serif';
+    ctx.fillText('YAREMA', 600, 320);
+
+    // BUS
+    ctx.fillStyle = '#d90d0d';
+    ctx.font = '800 56px Montserrat, Arial, sans-serif';
+    ctx.fillText('BUS', 600, 400);
+
+    // Підпис
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '600 28px Montserrat, Arial, sans-serif';
+    ctx.fillText('CRM Пасажири', 600, 490);
+
+    // Лінія знизу
+    ctx.fillStyle = '#d90d0d';
+    ctx.fillRect(0, H - 6, W, 6);
+}
+
+// ── Download helpers ──
+function dl(canvasId, filename) {
+    var c = document.getElementById(canvasId);
+    var a = document.createElement('a');
+    a.download = filename;
+    a.href = c.toDataURL('image/png');
+    a.click();
+}
+
+function downloadAll() {
+    var items = [
+        { canvasId: 'icon180', name: 'icon-180.png' },
+        { canvasId: 'icon192', name: 'icon-192.png' },
+        { canvasId: 'icon512', name: 'icon-512.png' },
+        { canvasId: 'ogImage', name: 'og-image.png' }
+    ];
+    items.forEach(function(item, i) {
+        setTimeout(function() {
+            dl(item.canvasId, item.name);
+        }, i * 500);
+    });
+}
+
+// Чекаємо шрифт Montserrat і малюємо все
+document.fonts.ready.then(function() {
+    drawIcon('icon180', 180);
+    drawIcon('icon192', 192);
+    drawIcon('icon512', 512);
+    drawOG();
+});
+</script>
+</body>
+</html>
