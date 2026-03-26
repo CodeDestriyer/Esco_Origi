@@ -928,10 +928,12 @@
         .bulk-toolbar-btn { padding: 7px 4px; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.2s; min-height: 34px; width: 100%; text-align: center; }
         .bulk-toolbar-btn.select-all { background: rgba(255,255,255,0.2); color: white; }
         .bulk-toolbar-btn.select-all:hover { background: rgba(255,255,255,0.35); }
-        .bulk-toolbar-btn.assign { background: var(--orange); color: white; }
-        .bulk-toolbar-btn.assign:hover { background: #ea580c; }
-        .bulk-toolbar-btn.route { background: #7c3aed; color: white; }
-        .bulk-toolbar-btn.route:hover { background: #6d28d9; }
+        .bulk-toolbar-btn.assign { background: rgba(255,255,255,0.2); color: white; }
+        .bulk-toolbar-btn.assign:hover { background: rgba(255,255,255,0.35); }
+        .bulk-toolbar-btn.route { background: rgba(255,255,255,0.2); color: white; }
+        .bulk-toolbar-btn.route:hover { background: rgba(255,255,255,0.35); }
+        .bulk-toolbar-btn.bulk-delete { background: #dc2626; color: white; }
+        .bulk-toolbar-btn.bulk-delete:hover { background: #b91c1c; }
         .bulk-toolbar-btn.cancel { background: rgba(255,255,255,0.15); color: white; }
         .bulk-toolbar-btn.cancel:hover { background: rgba(255,255,255,0.25); }
         .bulk-trip-dd { position: absolute; bottom: 100%; left: 0; margin-bottom: 6px; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 240px; max-height: 280px; overflow-y: auto; display: none; color: var(--text-primary); }
@@ -1039,8 +1041,6 @@
         .opt-dist-badge { background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .opt-time-badge { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .opt-eta-badge { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-        .bulk-toolbar-btn.optimize { background: var(--purple); color: white; }
-        .bulk-toolbar-btn.optimize:hover { background: #7c3aed; }
     </style>
 </head>
 <body>
@@ -1678,9 +1678,10 @@
     <div class="bulk-toolbar-grid">
         <button class="bulk-toolbar-btn assign" onclick="openBulkTripDropdown(event)">🚐 Рейс</button>
         <button class="bulk-toolbar-btn route" onclick="openRouteAssignModal()">🗺️ Маршрут</button>
-        <button class="bulk-toolbar-btn" style="background:#f59e0b;color:white;" onclick="openTagModal()">🏷 Теги</button>
-        <button class="bulk-toolbar-btn optimize" onclick="bulkOptimize()">⚡ Оптиміз.</button>
-        <button class="bulk-toolbar-btn" style="background:#f3f4f6;color:#6b7280;" onclick="bulkArchive()">📦 Архів</button>
+        <button class="bulk-toolbar-btn assign" onclick="openTagModal()">🏷 Теги</button>
+        <button class="bulk-toolbar-btn assign" onclick="bulkOptimize()">⚡ Оптиміз.</button>
+        <button class="bulk-toolbar-btn assign" onclick="bulkArchive()">📦 Архів</button>
+        <button class="bulk-toolbar-btn bulk-delete" onclick="bulkDelete()">🗑️ Видалити</button>
     </div>
     <div class="bulk-trip-dd" id="bulkTripDd"></div>
 </div>
@@ -7515,6 +7516,26 @@ function archivePax(paxId, name) {
             // Фізично перенесено в Archive_crm_v3 — видаляємо з локального масиву
             passengers = passengers.filter(x => x['PAX_ID'] !== paxId);
             showToast('✅ Архівовано');
+            render(); updateAllCounts();
+        } else {
+            showToast('❌ ' + (res.error || 'Помилка'));
+        }
+    });
+}
+
+// ── Масове видалення (архів з позначкою "Видалено") ──
+function bulkDelete() {
+    const ids = Array.from(selectedIds);
+    if (!ids.length) return;
+    showConfirm('🗑️ Видалити ' + ids.length + ' пасажир(ів)?\n\n(Переміщення в архів з позначкою "Видалено")', async function(yes) {
+        if (!yes) return;
+        showLoader('Видалення ' + ids.length + ' записів...');
+        const res = await apiPost('deletePassenger', { pax_ids: ids });
+        hideLoader();
+        if (res.ok) {
+            passengers = passengers.filter(x => !ids.includes(x['PAX_ID']));
+            showToast('✅ Видалено ' + ids.length + ' записів');
+            clearSelection();
             render(); updateAllCounts();
         } else {
             showToast('❌ ' + (res.error || 'Помилка'));
