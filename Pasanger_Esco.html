@@ -298,11 +298,10 @@
         .card-actions.show { display: flex; padding: 10px 12px; border-top: 1px solid var(--border); }
         .card-actions .btn-card-action { flex: 1 1 auto; min-width: 80px; }
         /* Кнопка "Писати" — відкриває popup з месенджерами */
-        .btn-card-action.btn-write { background: #dbeafe; color: #1d4ed8; }
-        .btn-card-action.btn-write:hover { background: #1d4ed8; color: white; }
-        /* Кнопка "Редагувати" — відкриває форму ліда з заповненими даними */
-        .btn-card-action.btn-edit { background: #fef3c7; color: #92400e; }
-        .btn-card-action.btn-edit:hover { background: #f59e0b; color: white; }
+        .btn-card-action.btn-write { background: #e0f2fe; color: var(--primary); }
+        .btn-card-action.btn-write:hover { background: var(--primary); color: white; }
+        .btn-card-action.btn-edit { background: #e0f2fe; color: var(--primary); }
+        .btn-card-action.btn-edit:hover { background: var(--primary); color: white; }
         /* === POPUP ВИБОРУ МЕСЕНДЖЕРА: Viber, Telegram, WhatsApp, SmartSender ===
            Повноекранний overlay з popup по центру. Відкривається кнопкою "Писати" */
         .messenger-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 200; align-items: center; justify-content: center; }
@@ -3737,9 +3736,9 @@ function renderCard(p) {
             <button class="btn-card-action btn-call" onclick="window.open('tel:${cleanPhone}')">📞 Дзвінок</button>
             <button class="btn-card-action btn-write" onclick="event.stopPropagation(); openMessengerPopup('${cleanPhone}','${smartId}')">✉️ Писати</button>
             <button class="btn-card-action btn-edit" onclick="event.stopPropagation(); openEditPax('${id}')">✏️ Редагувати</button>
-            <button class="btn-card-action" style="background:#ede9fe;color:#7c3aed;" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">🚐 Рейс</button>
-            <button class="btn-card-action" style="background:#fef3c7;color:#92400e;" onclick="event.stopPropagation(); openTagModal('${id}')">🏷 Тег</button>
-            <button class="btn-card-action" style="background:#f3f4f6;color:#6b7280;" onclick="event.stopPropagation(); archivePax('${id}','${name}')">📦 Архів</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">🚐 Рейс</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); openTagModal('${id}')">🏷 Тег</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); archivePax('${id}','${name}')">📦 Архів</button>
             <button class="btn-card-action btn-delete" onclick="deletePax('${id}','${p._sheet||''}','${name}')">🗑️ Видалити</button>
         </div>
     </div>`;
