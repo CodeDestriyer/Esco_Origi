@@ -2540,6 +2540,9 @@ function showPaxView(dir) {
 
 function showTripsView() {
     currentView = 'trips';
+    // Скидаємо фільтр напрямку рейсів щоб не конфліктував з фільтром пасажирів
+    tripDirFilter = 'all';
+    document.querySelectorAll('.trip-filter-btn[data-dir]').forEach(b => b.classList.toggle('active', b.dataset.dir === 'all'));
     document.getElementById('passengersView').classList.add('hidden');
     document.getElementById('tripsView').classList.add('active');
     document.getElementById('routesView').style.display = 'none';
