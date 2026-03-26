@@ -3988,7 +3988,7 @@ function toggleCardActions(id) {
 function openMessengerPopup(phone, smartId) {
     const grid = document.getElementById('messengerGrid');
     const cleanPhone = (phone || '').replace(/[^+\d]/g, '');
-    var smartBtn = (smartId && smartId.trim()) ? `<button class="messenger-popup-item" onclick="openMessenger('smartsender','${smartId}')">🤖 SmartSender</button>` : '';
+    var smartBtn = (smartId && smartId.trim()) ? `<button class="messenger-popup-item" onclick="openSmartSender('${smartId}')" style="background:#ff6600;color:white;border-color:#ff6600">🤖 Smart</button>` : '';
     grid.innerHTML = `
         <button class="messenger-popup-item" onclick="closeMessengerPopup(); window.open('tel:${cleanPhone}')" style="background:var(--primary);color:white;border-color:var(--primary)">📞 Дзвінок</button>
         <button class="messenger-popup-item" onclick="openMessenger('viber','${cleanPhone}')" style="background:#7360f2;color:white;border-color:#7360f2">💬 Viber</button>
@@ -4022,10 +4022,20 @@ function openMessenger(type, contact) {
         case 'whatsapp':
             window.open('https://wa.me/' + phoneNoPlus, '_blank');
             break;
-        case 'smartsender':
-            window.open('https://smartsender.com/contacts/' + encodeURIComponent(contact), '_blank');
-            break;
     }
+}
+
+// ── Smart Sender: копіює ID + відкриває консоль пошуку контактів ──
+// [ПРОЕКТ] Посилання Smart Sender — змінити для нового проекту:
+const SMART_SENDER_CONSOLE_URL = 'https://console.smartsender.com/contacts?project=esko-proek-131349';
+function openSmartSender(smartId) {
+    closeMessengerPopup();
+    if (!smartId || !smartId.trim()) { showToast('⚠️ Немає Ід_смарт'); return; }
+    // Тихе копіювання ID в буфер
+    copyToClipboard(smartId.trim());
+    showToast('📋 SS ID скопійовано — вставте в пошук');
+    // Відкриваємо консоль Smart Sender
+    window.open(SMART_SENDER_CONSOLE_URL, '_blank');
 }
 
 // ================================================================
