@@ -734,6 +734,10 @@
         .form-group label { display: block; font-size: 9px; font-weight: 600; color: var(--text-secondary); margin-bottom: 2px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 7px; border: 2px solid var(--border); border-radius: 4px; font-size: 12px; font-family: inherit; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .addr-quick-btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .addr-quick-btn { padding: 3px 8px; font-size: 10px; font-weight: 600; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; font-family: inherit; white-space: nowrap; transition: all .15s; }
+        .addr-quick-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .addr-quick-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-cancel { padding: 10px 20px; background: white; border: 2px solid var(--border); border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
         .btn-cancel:hover { background: #f3f4f6; border-color: #9ca3af; }
@@ -1493,7 +1497,7 @@
             </div>
             <div style="height:1px;background:var(--border);margin:10px 0;"></div>
             <div class="form-group"><label>Напрямок <span style="color:var(--danger)">*</span></label>
-                <select id="fDirection"><option value="ua-eu">🇺🇦→🇪🇺 Україна-Європа</option><option value="eu-ua">🇪🇺→🇺🇦 Європа-Україна</option></select>
+                <select id="fDirection" onchange="updateAddrSuggestions()"><option value="ua-eu">🇺🇦→🇪🇺 Україна-Європа</option><option value="eu-ua">🇪🇺→🇺🇦 Європа-Україна</option></select>
             </div>
             <div class="form-group"><label>ПіБ <span style="color:var(--danger)">*</span></label><input type="text" id="fName" placeholder="Прізвище Ім'я"></div>
             <div class="form-row">
@@ -1511,8 +1515,8 @@
                 </button>
                 <div id="tripSuggestResult" style="display:none; margin-top:6px; padding:8px 12px; background:#ecfdf5; border-radius:8px; font-size:11px; font-weight:700; color:#059669;"></div>
             </div>
-            <div class="form-group"><label>Адреса відправки</label><input type="text" id="fFrom"></div>
-            <div class="form-group"><label>Адреса прибуття</label><input type="text" id="fTo"></div>
+            <div class="form-group"><label>Адреса відправки</label><input type="text" id="fFrom" list="dlFrom" autocomplete="off"><datalist id="dlFrom"></datalist><div class="addr-quick-btns" id="qbFrom"></div></div>
+            <div class="form-group"><label>Адреса прибуття</label><input type="text" id="fTo" list="dlTo" autocomplete="off"><datalist id="dlTo"></datalist><div class="addr-quick-btns" id="qbTo"></div></div>
             <div class="form-row">
                 <div class="form-group"><label>Ціна квитка</label><input type="text" id="fPrice"></div>
                 <div class="form-group"><label>Валюта квитка</label>
@@ -2035,6 +2039,31 @@ function getDetailSections() {
     ];
 }
 const READONLY_FIELDS = ['pax_id','smartId','dateCreated','sourceSheet','cliId','bookingId','rteId','debt','dateArchive','archivedBy','archiveReason','archiveId'];
+
+// ── Адреси Швейцарії (зупинки ЖД вокзалів) ──
+const ADDRESS_PRESETS_CH = [
+    { city: 'Zürich', label: 'Цюрих', address: 'Zentrum CH, Sihlquai 41, 8005 Zürich, Швейцарія' },
+    { city: 'St. Gallen', label: 'Сен Гален', address: 'Bahnhofpl. 8b, 9000 St. Gallen, Швейцарія' },
+    { city: 'Winterthur', label: 'Вінтертур', address: 'Bahnhofpl. 23, 8400 Winterthur, Швейцарія' },
+    { city: 'Bern', label: 'Берн', address: 'Diamanthaus, Postfach, 3001 Bern, Швейцарія' },
+    { city: 'Lausanne', label: 'Лозана', address: 'Pl. de la Gare 5A, 1003 Lausanne, Швейцарія' },
+    { city: 'Geneva', label: 'Женева', address: 'Pl. de Cornavin 7, 1201 Genève, Швейцарія' },
+    { city: 'Oftringen', label: 'Офтрінген', address: 'Oftringen' },
+    { city: 'Aarau', label: 'Аарау', address: 'Aarau' },
+    { city: 'Baden', label: 'Баден', address: 'Baden' },
+    { city: 'Wettingen', label: 'Веттінген', address: 'Wettingen' },
+    { city: 'Wil', label: 'Віл', address: 'Wil' },
+    { city: 'Nyon', label: 'Ніон', address: 'Nyon' },
+    { city: 'Vevey', label: 'Веве', address: 'Vevey' },
+    { city: 'Montreux', label: 'Монтре', address: 'Montreux' },
+    { city: 'Yverdon', label: 'Івердон', address: 'Yverdon' },
+    { city: 'Fribourg', label: 'Фрібур', address: 'Fribourg' },
+    { city: 'Payerne', label: 'Паєрн', address: 'Payerne' }
+];
+// Адреса відправки з України (UA→EU) / Адреса прибуття в Україну (EU→UA)
+const ADDRESS_PRESETS_UA = [
+    { city: 'Львів', label: 'Львів', address: 'Львів' }
+];
 const SELECT_OPTIONS = {
     leadStatus: ['Новий','В роботі','Підтверджено','Відмова'],
     payStatus: ['Не оплачено','Частково','Оплачено'],
@@ -4040,6 +4069,7 @@ function openEditPax(id) {
     const saveBtn = document.getElementById('paxSaveBtn');
     if (saveBtn) saveBtn.textContent = '💾 Оновити';
     openModal('passengerModal');
+    updateAddrSuggestions();
 }
 
 // ================================================================
@@ -4065,6 +4095,16 @@ function startInlineEdit(paxId, key, sheet) {
         el.querySelector('select').focus();
     } else if (key === 'date') {
         el.innerHTML = `<input class="detail-inline-edit" type="date" value="${val}" onchange="saveInline('${paxId}','${key}','${sheet}',this.value)" onblur="cancelInline('${paxId}','${key}')">`;
+        el.querySelector('input').focus();
+    } else if (key === 'from' || key === 'to') {
+        // Address field — input + quick-select buttons
+        const dir = getDirectionCode(p['Напрям'] || '');
+        const isUaEu = dir === 'ua-eu';
+        const presets = (key === 'from')
+            ? (isUaEu ? ADDRESS_PRESETS_UA : ADDRESS_PRESETS_CH)
+            : (isUaEu ? ADDRESS_PRESETS_CH : ADDRESS_PRESETS_UA);
+        const suggestHtml = getAddrSuggestHtml(paxId, key, sheet, presets);
+        el.innerHTML = `<input class="detail-inline-edit" type="text" value="${val}" onkeydown="if(event.key==='Enter')saveInline('${paxId}','${key}','${sheet}',this.value);if(event.key==='Escape')cancelInline('${paxId}','${key}')" onblur="setTimeout(()=>{if(!document.querySelector('.addr-quick-btn:hover'))saveInline('${paxId}','${key}','${sheet}',document.querySelector('#dv-${paxId}-${key} input')?.value||'')},200)">${suggestHtml}`;
         el.querySelector('input').focus();
     } else {
         el.innerHTML = `<input class="detail-inline-edit" type="text" value="${val}" onkeydown="if(event.key==='Enter')saveInline('${paxId}','${key}','${sheet}',this.value);if(event.key==='Escape')cancelInline('${paxId}','${key}')" onblur="saveInline('${paxId}','${key}','${sheet}',this.value)">`;
@@ -4173,6 +4213,51 @@ function openAddModal() {
     const saveBtn = document.getElementById('paxSaveBtn');
     if (saveBtn) saveBtn.textContent = '💾 Зберегти';
     openModal('passengerModal');
+    updateAddrSuggestions();
+}
+
+// ── Адреси: швидкий вибір + datalist ──
+function updateAddrSuggestions() {
+    const dir = document.getElementById('fDirection').value; // 'ua-eu' | 'eu-ua'
+    const isUaEu = dir === 'ua-eu';
+    // UA→EU: відправка=UA, прибуття=CH  |  EU→UA: відправка=CH, прибуття=UA
+    const fromPresets = isUaEu ? ADDRESS_PRESETS_UA : ADDRESS_PRESETS_CH;
+    const toPresets   = isUaEu ? ADDRESS_PRESETS_CH : ADDRESS_PRESETS_UA;
+    fillAddrDatalist('dlFrom', fromPresets);
+    fillAddrDatalist('dlTo', toPresets);
+    fillAddrQuickBtns('qbFrom', 'fFrom', fromPresets);
+    fillAddrQuickBtns('qbTo', 'fTo', toPresets);
+}
+
+function fillAddrDatalist(dlId, presets) {
+    const dl = document.getElementById(dlId);
+    if (!dl) return;
+    dl.innerHTML = presets.map(p => `<option value="${p.address}">${p.label} — ${p.city}</option>`).join('');
+}
+
+function fillAddrQuickBtns(containerId, inputId, presets) {
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    c.innerHTML = presets.map(p =>
+        `<button type="button" class="addr-quick-btn" onclick="pickAddr('${inputId}','${p.address.replace(/'/g,"\\'")}',this)" title="${p.address}">${p.label}</button>`
+    ).join('');
+}
+
+function pickAddr(inputId, address, btn) {
+    const inp = document.getElementById(inputId);
+    if (inp) inp.value = address;
+    // Toggle active state
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.addr-quick-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// Генерує HTML кнопок вибору адреси для inline edit
+function getAddrSuggestHtml(paxId, key, sheet, presets) {
+    return '<div class="addr-quick-btns" style="margin-top:4px">' +
+        presets.map(p =>
+            `<button type="button" class="addr-quick-btn" onclick="saveInline('${paxId}','${key}','${sheet}','${p.address.replace(/'/g,"\\'")}')">${p.label}</button>`
+        ).join('') + '</div>';
 }
 
 // ================================================================
