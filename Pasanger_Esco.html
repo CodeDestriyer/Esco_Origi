@@ -2415,9 +2415,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================================================================
 // DUPLICATE CHECK ON LOAD
 // ================================================================
+var _duplicateIds = []; // PAX_IDs дублів для фільтрації
+
 function checkDuplicatesOnLoad() {
     if (!passengers || passengers.length < 2) return;
-    const dupes = [];
+    _duplicateIds = [];
     const seen = {};
     for (const p of passengers) {
         const digits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
@@ -2426,21 +2428,19 @@ function checkDuplicatesOnLoad() {
         if (!tail || !date) continue;
         const key = tail + '|' + date;
         if (seen[key]) {
-            // Перший раз — додаємо і оригінал і дубль
-            if (!seen[key]._dupeAdded) {
-                dupes.push(seen[key]);
-                seen[key]._dupeAdded = true;
-            }
-            dupes.push(p);
+            if (!seen[key]._added) { _duplicateIds.push(seen[key]['PAX_ID']); seen[key]._added = true; }
+            _duplicateIds.push(p['PAX_ID']);
         } else {
             seen[key] = p;
         }
     }
-    if (dupes.length === 0) return;
+    if (_duplicateIds.length === 0) return;
 
-    // Групуємо по телефон+дата
+    // Групуємо для повідомлення
     const groups = {};
-    for (const p of dupes) {
+    for (const id of _duplicateIds) {
+        const p = passengers.find(x => x['PAX_ID'] === id);
+        if (!p) continue;
         const tail = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
         const key = (tail.length >= 9 ? tail.slice(-9) : tail) + '|' + String(p['Дата виїзду'] || '').trim();
         if (!groups[key]) groups[key] = [];
@@ -2448,20 +2448,38 @@ function checkDuplicatesOnLoad() {
     }
     const groupCount = Object.keys(groups).length;
 
-    let msg = '⚠️ Знайдено ' + groupCount + ' дубл' + (groupCount === 1 ? 'ь' : groupCount < 5 ? 'і' : 'ів') + ' (телефон + дата):\n\n';
+    let msg = '⚠️ Знайдено <b>' + groupCount + '</b> дубл' + (groupCount === 1 ? 'ь' : groupCount < 5 ? 'і' : 'ів') + ' (телефон + дата):<br><br>';
     let i = 0;
     for (const key in groups) {
-        if (i >= 5) { msg += '... та ще ' + (groupCount - 5) + '\n'; break; }
+        if (i >= 5) { msg += '... та ще ' + (groupCount - 5) + '<br>'; break; }
         const g = groups[key];
-        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + (g[0]['Дата виїзду'] || '—') + '\n';
-        g.forEach(p => { msg += '   • ' + (p['Піб'] || '—') + ' (' + (p['PAX_ID'] || '') + ')\n'; });
-        msg += '\n';
+        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + (g[0]['Дата виїзду'] || '—') + '<br>';
+        g.forEach(p => { msg += '&nbsp;&nbsp;• ' + (p['Піб'] || '—') + '<br>'; });
+        msg += '<br>';
         i++;
     }
-    msg += 'Перевірте та видаліть зайві записи.';
 
-    // Показуємо через невелику затримку щоб не заважати завантаженню
-    setTimeout(() => showConfirm(msg, function() {}), 1500);
+    setTimeout(() => {
+        document.getElementById('confirmText').innerHTML = msg;
+        const btns = document.querySelector('#confirmOverlay .confirm-buttons');
+        if (btns) {
+            btns.innerHTML = `
+                <button class="confirm-btn no" onclick="confirmResult(false)">Закрити</button>
+                <button class="confirm-btn yes" onclick="confirmResult(false); showDuplicates();">🔍 Переглянути дублі</button>
+            `;
+        }
+        document.getElementById('confirmOverlay').classList.add('show');
+    }, 1500);
+}
+
+function showDuplicates() {
+    if (!_duplicateIds.length) { showToast('Дублів не знайдено'); return; }
+    // Переключаємо на пасажирів, скидаємо фільтри
+    showPaxView('all');
+    // Вставляємо спеціальний пошуковий запит
+    document.getElementById('globalSearch').value = '__dupes__';
+    render();
+    showToast('Показано ' + _duplicateIds.length + ' дублів');
 }
 
 // ================================================================
@@ -3621,7 +3639,9 @@ function getFilteredPassengers() {
             var depDate = formatTripDate(p['Дата виїзду'] || '');
             if (depDate !== paxCalSelectedDate) return false;
         }
-        if (search) {
+        if (search === '__dupes__') {
+            if (!_duplicateIds.includes(p['PAX_ID'])) return false;
+        } else if (search) {
             const name = String(p['Піб'] || '').toLowerCase();
             const phone = String(p['Телефон пасажира'] || '');
             if (!name.includes(search) && !phone.includes(search)) return false;
@@ -6258,6 +6278,9 @@ function showToast(msg, duration) {
 
 function showConfirm(text, cb) {
     document.getElementById('confirmText').innerHTML = text.replace(/\n/g, '<br>');
+    // Відновлюємо стандартні кнопки (могли бути замінені checkDuplicatesOnLoad)
+    const btns = document.querySelector('#confirmOverlay .confirm-buttons');
+    if (btns) btns.innerHTML = '<button class="confirm-btn no" onclick="confirmResult(false)">Скасувати</button><button class="confirm-btn yes" onclick="confirmResult(true)">Підтвердити</button>';
     confirmCallback = cb;
     document.getElementById('confirmOverlay').classList.add('show');
 }
