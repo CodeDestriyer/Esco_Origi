@@ -2418,6 +2418,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================================================================
 var _duplicateIds = []; // PAX_IDs дублів для фільтрації
 
+// Нормалізує дату до YYYY-MM-DD (з будь-якого формату: ISO, dd.mm.yyyy, yyyy-mm-dd)
+function normalizeDateForDupe(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return '';
+    // ISO: 2026-04-01T00:00:00.000Z → 2026-04-01
+    if (s.includes('T')) return s.split('T')[0];
+    // yyyy-mm-dd
+    if (s.match(/^\d{4}-\d{2}-\d{2}$/)) return s;
+    // dd.mm.yyyy
+    const m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (m) return m[3] + '-' + m[2] + '-' + m[1];
+    return s;
+}
+
 function checkDuplicatesOnLoad() {
     if (!passengers || passengers.length < 2) return;
     _duplicateIds = [];
@@ -2425,7 +2439,7 @@ function checkDuplicatesOnLoad() {
     for (const p of passengers) {
         const digits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
         const tail = digits.length >= 9 ? digits.slice(-9) : digits;
-        const date = String(p['Дата виїзду'] || '').trim();
+        const date = normalizeDateForDupe(p['Дата виїзду']);
         if (!tail || !date) continue;
         const key = tail + '|' + date;
         if (seen[key]) {
@@ -2443,7 +2457,8 @@ function checkDuplicatesOnLoad() {
         const p = passengers.find(x => x['PAX_ID'] === id);
         if (!p) continue;
         const tail = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
-        const key = (tail.length >= 9 ? tail.slice(-9) : tail) + '|' + String(p['Дата виїзду'] || '').trim();
+        const date = normalizeDateForDupe(p['Дата виїзду']);
+        const key = (tail.length >= 9 ? tail.slice(-9) : tail) + '|' + date;
         if (!groups[key]) groups[key] = [];
         groups[key].push(p);
     }
@@ -2454,7 +2469,8 @@ function checkDuplicatesOnLoad() {
     for (const key in groups) {
         if (i >= 5) { msg += '... та ще ' + (groupCount - 5) + '<br>'; break; }
         const g = groups[key];
-        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + (g[0]['Дата виїзду'] || '—') + '<br>';
+        const niceDate = formatTripDate(g[0]['Дата виїзду']);
+        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + niceDate + '<br>';
         g.forEach(p => { msg += '&nbsp;&nbsp;• ' + (p['Піб'] || '—') + '<br>'; });
         msg += '<br>';
         i++;
@@ -4794,11 +4810,12 @@ async function savePassenger() {
     // CREATE MODE — перевірка дублікатів: Телефон + Дата виїзду
     const phoneDigits = phone.replace(/\D/g, '');
     const phoneTail = phoneDigits.length >= 9 ? phoneDigits.slice(-9) : phoneDigits;
-    if (phoneTail && date) {
+    const normDate = normalizeDateForDupe(date);
+    if (phoneTail && normDate) {
         const localExact = passengers.find(p => {
             const pDigits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
             const pTail = pDigits.length >= 9 ? pDigits.slice(-9) : pDigits;
-            return pTail && (phoneDigits === pDigits || phoneTail === pTail) && String(p['Дата виїзду'] || '').trim() === date;
+            return pTail && (phoneDigits === pDigits || phoneTail === pTail) && normalizeDateForDupe(p['Дата виїзду']) === normDate;
         });
         if (localExact) {
             saveBtn.disabled = false; saveBtn.textContent = origText; saveBtn.style.opacity = '';
