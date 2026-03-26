@@ -2402,6 +2402,8 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
         // Підтягуємо маршрути для сайдбару
         loadRoutes();
+        // Перевірка дублів при завантаженні
+        checkDuplicatesOnLoad();
     }).catch(() => { hideLoader(); render(); });
 
     setInterval(silentSync, 30000);
@@ -2409,6 +2411,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // Автозапуск навчання якщо вже залогінений і ще не проходив
     checkOnboardingAutoStart();
 });
+
+// ================================================================
+// DUPLICATE CHECK ON LOAD
+// ================================================================
+function checkDuplicatesOnLoad() {
+    if (!passengers || passengers.length < 2) return;
+    const dupes = [];
+    const seen = {};
+    for (const p of passengers) {
+        const digits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+        const tail = digits.length >= 9 ? digits.slice(-9) : digits;
+        const date = String(p['Дата виїзду'] || '').trim();
+        if (!tail || !date) continue;
+        const key = tail + '|' + date;
+        if (seen[key]) {
+            // Перший раз — додаємо і оригінал і дубль
+            if (!seen[key]._dupeAdded) {
+                dupes.push(seen[key]);
+                seen[key]._dupeAdded = true;
+            }
+            dupes.push(p);
+        } else {
+            seen[key] = p;
+        }
+    }
+    if (dupes.length === 0) return;
+
+    // Групуємо по телефон+дата
+    const groups = {};
+    for (const p of dupes) {
+        const tail = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+        const key = (tail.length >= 9 ? tail.slice(-9) : tail) + '|' + String(p['Дата виїзду'] || '').trim();
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+    }
+    const groupCount = Object.keys(groups).length;
+
+    let msg = '⚠️ Знайдено ' + groupCount + ' дубл' + (groupCount === 1 ? 'ь' : groupCount < 5 ? 'і' : 'ів') + ' (телефон + дата):\n\n';
+    let i = 0;
+    for (const key in groups) {
+        if (i >= 5) { msg += '... та ще ' + (groupCount - 5) + '\n'; break; }
+        const g = groups[key];
+        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + (g[0]['Дата виїзду'] || '—') + '\n';
+        g.forEach(p => { msg += '   • ' + (p['Піб'] || '—') + ' (' + (p['PAX_ID'] || '') + ')\n'; });
+        msg += '\n';
+        i++;
+    }
+    msg += 'Перевірте та видаліть зайві записи.';
+
+    // Показуємо через невелику затримку щоб не заважати завантаженню
+    setTimeout(() => showConfirm(msg, function() {}), 1500);
+}
 
 // ================================================================
 // SILENT SYNC
@@ -4716,34 +4770,18 @@ async function savePassenger() {
         return;
     }
 
-    // CREATE MODE — локальна перевірка дублікатів
-    // Точний дубль: Телефон + Дата виїзду збігаються
-    // М'який дубль: тільки Телефон збігається (інша дата)
+    // CREATE MODE — перевірка дублікатів: Телефон + Дата виїзду
     const phoneDigits = phone.replace(/\D/g, '');
     const phoneTail = phoneDigits.length >= 9 ? phoneDigits.slice(-9) : phoneDigits;
-    let localExact = null, localSoft = null;
-    for (const p of passengers) {
-        const pDigits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
-        const pTail = pDigits.length >= 9 ? pDigits.slice(-9) : pDigits;
-        const pDate = String(p['Дата виїзду'] || '').trim();
-        const phoneMatch = phoneTail && pTail && (phoneDigits === pDigits || phoneTail === pTail);
-        if (!phoneMatch) continue;
-        if (pDate === date && date) {
-            localExact = p; break;
-        }
-        if (!localSoft) localSoft = p;
-    }
-    if (localExact) {
-        saveBtn.disabled = false; saveBtn.textContent = origText; saveBtn.style.opacity = '';
-        showConfirm('❌ Дублікат! Телефон + дата збігаються:\n\n' + (localExact['Піб'] || '—') + '\n📞 ' + localExact['Телефон пасажира'] + '\n📅 ' + localExact['Дата виїзду'] + '\n\nТакий пасажир вже є в системі!', function(yes) {});
-        return;
-    }
-    if (localSoft) {
-        const confirmed = await new Promise(resolve => {
-            showConfirm('⚠️ Цей телефон вже є в системі!\n\n' + (localSoft['Піб'] || '—') + '\n📞 ' + localSoft['Телефон пасажира'] + '\n📅 ' + (localSoft['Дата виїзду'] || 'без дати') + '\n\nДодати ще одного пасажира з цим номером?', resolve);
+    if (phoneTail && date) {
+        const localExact = passengers.find(p => {
+            const pDigits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+            const pTail = pDigits.length >= 9 ? pDigits.slice(-9) : pDigits;
+            return pTail && (phoneDigits === pDigits || phoneTail === pTail) && String(p['Дата виїзду'] || '').trim() === date;
         });
-        if (!confirmed) {
+        if (localExact) {
             saveBtn.disabled = false; saveBtn.textContent = origText; saveBtn.style.opacity = '';
+            showConfirm('❌ Дублікат! Телефон + дата збігаються:\n\n' + (localExact['Піб'] || '—') + '\n📞 ' + localExact['Телефон пасажира'] + '\n📅 ' + localExact['Дата виїзду'] + '\n\nТакий пасажир вже є в системі!', function(yes) {});
             return;
         }
     }
