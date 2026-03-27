@@ -3797,13 +3797,15 @@ function renderCard(p) {
         const trip = trips.find(t => t.cal_id === calId);
         const tripDate = trip ? formatTripDate(trip.date) : '';
         const tripCity = trip ? (trip.city || '') : '';
-        const tripAuto = trip ? (trip.auto_name || '') : '';
+        const tripAutoRaw = trip ? (trip.auto_name || '') : '';
+        const tripAuto = cleanAutoName(tripAutoRaw);
         const tripFree = trip ? (parseInt(trip.free_seats) || 0) : '';
+        const autoClr = getAutoColor(tripAuto);
         tripStrip = `<div class="trip-assign-wrap" style="position:relative">
             <div class="card-trip-strip has-trip" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">
                 <span class="card-trip-icon">🚐</span>
                 <span class="card-trip-text">${tripDate} — ${tripCity}</span>
-                <span class="card-trip-detail">${tripAuto}${tripFree !== '' ? ' · ' + tripFree + ' вільн.' : ''}</span>
+                <span class="card-trip-detail"><span style="background:${autoClr.bg};color:${autoClr.color};padding:1px 8px;border-radius:10px;">${tripAuto}</span> · ${tripFree} вільн.</span>
                 <span class="card-trip-arrow">›</span>
             </div>
             ${tripDDHtml}
