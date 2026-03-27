@@ -227,6 +227,7 @@
         /* === КАРТКА ЛІДА: Мета-рядок (дата рейсу, дата реєстрації, SmartSender ID) === */
         .card-meta-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .card-meta-tag { font-size: 9px; color: var(--text-secondary); background: var(--bg-main); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+        .card-note { font-size: 10px; color: #92400e; background: #fef3c7; padding: 3px 8px; border-radius: 4px; margin-top: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; transition: color .2s; }
         .card-smart-id { font-size: 11px; font-weight: 600; color: #7c3aed; background: #f3e8ff; padding: 2px 8px; border-radius: 4px; white-space: nowrap; cursor: pointer; transition: background .15s; }
         .card-smart-id:hover { background: #e9d5ff; }
         .card-smart-id:active { background: #d8b4fe; }
@@ -3735,6 +3736,7 @@ function renderCard(p) {
     const toAddr = p['Адреса прибуття'] || '';       // Маршрут: адреса прибуття
     const smartId = p['Ід_смарт'] || '';             // SmartSender ID (якщо є)
     const dateCreated = formatTripDate(p['Дата створення'] || ''); // Дата реєстрації (без часу)
+    const note = p['Примітка'] || '';                 // Примітка ліда
 
     // Борг
     const priceN = parseFloat(p['Ціна квитка']) || 0;
@@ -3785,7 +3787,9 @@ function renderCard(p) {
     const lsBadge = leadStatus === 'Новий' ? '<span class="badge badge-new">Новий</span>' :
         leadStatus === 'В роботі' ? '<span class="badge badge-work">В роботі</span>' :
         leadStatus === 'Підтверджено' ? '<span class="badge badge-confirmed">Підтверджено</span>' :
-        leadStatus === 'Відмова' ? '<span class="badge badge-refused">Відмова</span>' : '';
+        leadStatus === 'Відмова' ? '<span class="badge badge-refused">Відмова</span>' :
+        leadStatus === 'Відмова з завдатком' ? '<span class="badge badge-refused">Відм. з завд.</span>' :
+        leadStatus === 'Відмова без завдатку' ? '<span class="badge badge-refused">Відм. без завд.</span>' : '';
 
     // Pay badge
     const payBadge = payStatus === 'Оплачено' ? '<span class="badge badge-paid">Оплачено</span>' :
@@ -3811,7 +3815,7 @@ function renderCard(p) {
                 <div class="card-body">
                     <div class="card-top-row">
                         ${cf.includes('direction') ? `<span class="card-direction ${dirColorClass}">${dirLabel}</span>` : ''}
-                        ${cf.includes('phone') ? `<span class="card-phone">${phone}</span>` : ''}
+                        ${cf.includes('phone') ? `<span class="card-phone" onclick="event.stopPropagation(); copyToClipboard('${cleanPhone}'); this.style.color='#059669'; setTimeout(()=>this.style.color='',400);" title="Натисни щоб скопіювати" style="cursor:pointer;">${phone}</span>` : ''}
                         ${cf.includes('seats') ? `<span class="card-seats">${seats}м</span>` : ''}
                         ${cf.includes('date') ? `<span class="card-date">${date || '—'}</span>` : ''}
                         ${cf.includes('price') || cf.includes('deposit') ? `<div class="card-price-wrap">
@@ -3833,6 +3837,7 @@ function renderCard(p) {
                             ${cf.includes('tripDate') && tripDateStr ? '<span class="card-meta-tag">🗓 Рейс: '+tripDateStr+'</span>' : ''}
                             ${cf.includes('dateCreated') && dateCreated && dateCreated !== '—' ? '<span class="card-meta-tag">📅 Реєстр: '+dateCreated+'</span>' : ''}
                         </div>
+                        ${note ? `<div class="card-note" onclick="event.stopPropagation(); copyToClipboard('${note.replace(/'/g,"\\'")}'); this.style.color='#059669'; setTimeout(()=>this.style.color='',400);" title="Натисни щоб скопіювати">📝 ${note}</div>` : ''}
                     </div>
                 </div>
                 <!-- Стрілочка ▼ розгортки меню дій (крутиться 180° при open) -->
