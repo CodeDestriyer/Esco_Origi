@@ -4322,8 +4322,8 @@ function startInlineEdit(paxId, key, sheet) {
     const el = document.getElementById('dv-' + paxId + '-' + key);
     if (!el) return;
 
-    // Seat picker — visual modal тільки якщо є рейс
-    if (key === 'seatInCar' && p['CAL_ID']) {
+    // Місце в авто — завжди текстове поле (вільний ввід)
+    if (false && key === 'seatInCar' && p['CAL_ID']) {
         openSeatPicker(paxId, sheet);
         return;
     }
