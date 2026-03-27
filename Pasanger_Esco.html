@@ -2426,8 +2426,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAllCounts();
         updateTripFilterDropdown();
         updateTripAutoFilterDropdown();
+        // За замовчуванням показуємо нові за 24 год
+        currentDir = 'new24';
+        currentView = 'pax';
         updatePcSidebarActive();
         updateMobileSidebarActive();
+        updateNavActive('pax');
         render();
         // Перевірка дублів при завантаженні
         checkDuplicatesOnLoad();
