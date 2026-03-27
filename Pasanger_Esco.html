@@ -2057,9 +2057,10 @@ const CARD_FIELD_OPTIONS = [
     { key:'leadStatus', label:'Статус ліда (бейдж)' },
     { key:'payStatus', label:'Статус оплати (бейдж)' },
     { key:'debt', label:'Борг (бейдж)' },
-    { key:'note', label:'Примітка' }
+    { key:'note', label:'Примітка' },
+    { key:'seatInCar', label:'Місце в авто' }
 ];
-const DEFAULT_CARD_FIELDS = ['direction','phone','seats','date','price','deposit','name','pax_id','smartId','route','leadStatus','payStatus','debt','note'];
+const DEFAULT_CARD_FIELDS = ['direction','phone','seats','date','price','deposit','name','pax_id','smartId','route','seatInCar','leadStatus','payStatus','debt','note'];
 const OTHER_SECTIONS = [
     { key:'route', title:'🗺️ Маршрут', fields:['from','to','timing','vehicle','seatInCar','calId'] },
     { key:'finance', title:'💰 Фінанси', fields:['price','currency','deposit','currencyDeposit','weight','weightPrice','currencyWeight','debt'] },
@@ -3869,6 +3870,7 @@ function renderCard(p) {
                         </div>
                         ${cf.includes('route') ? routeHtml : ''}
                         <div class="card-meta-row">
+                            ${cf.includes('seatInCar') && seatInCar ? '<span class="card-meta-tag">💺 '+seatInCar+'</span>' : ''}
                             ${cf.includes('tripDate') && tripDateStr ? '<span class="card-meta-tag">🗓 Рейс: '+tripDateStr+'</span>' : ''}
                             ${cf.includes('dateCreated') && dateCreated && dateCreated !== '—' ? '<span class="card-meta-tag">📅 Реєстр: '+dateCreated+'</span>' : ''}
                         </div>
@@ -4318,10 +4320,11 @@ function startInlineEdit(paxId, key, sheet) {
     const el = document.getElementById('dv-' + paxId + '-' + key);
     if (!el) return;
 
-    // Seat picker — visual modal instead of text input
+    // Seat picker — visual modal якщо є рейс, текстове поле якщо немає
     if (key === 'seatInCar') {
-        openSeatPicker(paxId, sheet);
-        return;
+        const calId = p['CAL_ID'] || '';
+        if (calId) { openSeatPicker(paxId, sheet); return; }
+        // Без рейсу — просто текстове поле для вводу місця
     }
 
     if (SELECT_OPTIONS[key]) {
