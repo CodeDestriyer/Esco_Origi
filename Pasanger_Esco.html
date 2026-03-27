@@ -2124,7 +2124,8 @@ const SELECT_OPTIONS = {
     currency: ['CHF','EUR','UAH','USD','PLN','CZK'],
     currencyDeposit: ['UAH','CHF','EUR','USD','PLN','CZK'],
     currencyWeight: ['UAH','CHF','EUR','USD','PLN','CZK'],
-    direction: ['Україна-ЄВ','Європа-УК']
+    direction: ['Україна-ЄВ','Європа-УК'],
+    seatInCar: ['1','2','3','4','5','6','7','R1']
 };
 const LAYOUTS = {
     '1-3-3': ['D','1','2','3','4','5','6','7'],
@@ -4320,11 +4321,10 @@ function startInlineEdit(paxId, key, sheet) {
     const el = document.getElementById('dv-' + paxId + '-' + key);
     if (!el) return;
 
-    // Seat picker — visual modal якщо є рейс, текстове поле якщо немає
-    if (key === 'seatInCar') {
-        const calId = p['CAL_ID'] || '';
-        if (calId) { openSeatPicker(paxId, sheet); return; }
-        // Без рейсу — просто текстове поле для вводу місця
+    // Seat picker — visual modal тільки якщо є рейс
+    if (key === 'seatInCar' && p['CAL_ID']) {
+        openSeatPicker(paxId, sheet);
+        return;
     }
 
     if (SELECT_OPTIONS[key]) {
