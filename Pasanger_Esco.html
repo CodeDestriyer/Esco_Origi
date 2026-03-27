@@ -3661,7 +3661,9 @@ function getFilteredPassengers() {
         } else if (search) {
             const name = String(p['Піб'] || '').toLowerCase();
             const phone = String(p['Телефон пасажира'] || '');
-            if (!name.includes(search) && !phone.includes(search)) return false;
+            const smartId = String(p['Ід_смарт'] || '').toLowerCase();
+            const paxId = String(p['PAX_ID'] || '').toLowerCase();
+            if (!name.includes(search) && !phone.includes(search) && !smartId.includes(search) && !paxId.includes(search)) return false;
         }
         return true;
     });
