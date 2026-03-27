@@ -271,11 +271,11 @@ function findAllRows(sheet, colName, value) {
   return results;
 }
 
+// [ЛОГІКА БОРГУ] Борг = ціна квитка (оператор коригує вручну)
+// Завдаток НЕ віднімається автоматично
 function calcDebt(obj) {
   var price = parseFloat(obj['Ціна квитка']) || 0;
-  var wp = parseFloat(obj['Ціна багажу']) || 0;
-  var dep = parseFloat(obj['Завдаток']) || 0;
-  return Math.max(0, price + wp - dep);
+  return price;
 }
 
 function paxObjFromData(headers, data, shName, rowNum) {
