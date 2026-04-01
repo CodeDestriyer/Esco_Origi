@@ -84,13 +84,13 @@ var DATA_START = 2;
 
 // ── ВСІ ТАБЛИЦІ СИСТЕМИ (SpreadsheetApp.openById) ──
 var DB = {
-  PASSENGERS: '10SZhKV08BJyvWoMwhT0iddtWzYrDYFjCM8xgqViuE3Y',
-  POSYLKI:    '1lgaCHqWBIa6oFjFWfD8m58sLwbvQjmeje2gx3YAnBCo',
-  MARHRUT:    '1KW2Vh_E7OxggNB_NOzWmVM8siHzHr_mG8C939YXDC38',
-  KLIYENTU:   '1AhID7Ust45sA4PCAUjWJz515qnxzQGSj5wGQ7K8Jbu0',
-  FINANCE:    '1hZ67tuQYukugO_TjNsOS3IjovBR5hWMg-JmGAq5udBE',
-  CONFIG:     '19Ftljah5eX07RLHJaBrvYV7hStxspxcJVi6VATGZvF0',
-  ARCHIVE:    '1_vfEhdLEM2SVTBiu_3eDilMs1HlKxvPrJBbiHYjgrJo'
+  PASSENGERS: '1lgaCHqWBIa6oFjFWfD8m58sLwbvQjmeje2gx3YAnBCo',
+  POSYLKI:    '1_vfEhdLEM2SVTBiu_3eDilMs1HlKxvPrJBbiHYjgrJo',
+  MARHRUT:    '10SZhKV08BJyvWoMwhT0iddtWzYrDYFjCM8xgqViuE3Y',
+  KLIYENTU:   '1KW2Vh_E7OxggNB_NOzWmVM8siHzHr_mG8C939YXDC38',
+  FINANCE:    '1AhID7Ust45sA4PCAUjWJz515qnxzQGSj5wGQ7K8Jbu0',
+  CONFIG:     '1hZ67tuQYukugO_TjNsOS3IjovBR5hWMg-JmGAq5udBE',
+  ARCHIVE:    '19Ftljah5eX07RLHJaBrvYV7hStxspxcJVi6VATGZvF0'
 };
 
 // Головна таблиця цього скрипта
@@ -271,11 +271,11 @@ function findAllRows(sheet, colName, value) {
   return results;
 }
 
+// [ЛОГІКА БОРГУ] Борг = ціна квитка (оператор коригує вручну)
+// Завдаток НЕ віднімається автоматично
 function calcDebt(obj) {
   var price = parseFloat(obj['Ціна квитка']) || 0;
-  var wp = parseFloat(obj['Ціна багажу']) || 0;
-  var dep = parseFloat(obj['Завдаток']) || 0;
-  return Math.max(0, price + wp - dep);
+  return price;
 }
 
 function paxObjFromData(headers, data, shName, rowNum) {
@@ -605,24 +605,31 @@ function apiUpdateField(params) {
   sh.getRange(found.rowNum, colIdx + 1).setValue(params.value);
 
   // Перерахунок боргу + автооновлення статусу оплати
+  // [ЛОГІКА БОРГУ + СТАТУСУ ОПЛАТИ]
+  // Борг = ціна квитка (оператор коригує вручну, завдаток НЕ віднімається)
+  // Не оплачено: є ціна, немає завдатку
+  // Частково: є ціна + є завдаток
+  // Оплачено: тільки вручну оператором (не автоматично)
   if (['Ціна квитка','Ціна багажу','Завдаток'].indexOf(params.col) !== -1) {
     var obj = rowToObj(found.headers, found.data);
     obj[params.col] = params.value;
-    var debt = calcDebt(obj);
-    var debtIdx = found.headers.indexOf('Борг');
-    if (debtIdx !== -1) {
-      sh.getRange(found.rowNum, debtIdx + 1).setValue(debt);
+    var price = parseFloat(obj['Ціна квитка']) || 0;
+    var dep = parseFloat(obj['Завдаток']) || 0;
+    var currentPayStatus = obj['Статус оплати'] || '';
+
+    // Борг = ціна (при зміні ціни оновлюємо борг)
+    if (params.col === 'Ціна квитка') {
+      var debtIdx = found.headers.indexOf('Борг');
+      if (debtIdx !== -1) sh.getRange(found.rowNum, debtIdx + 1).setValue(price);
     }
 
-    // Автооновлення Статус оплати (Y)
-    var dep = parseFloat(obj['Завдаток']) || 0;
-    var price = parseFloat(obj['Ціна квитка']) || 0;
-    var newPayStatus = 'Не оплачено';
-    if (dep > 0 && debt > 0) newPayStatus = 'Частково';
-    if (dep > 0 && debt === 0) newPayStatus = 'Оплачено';
-    var payStatusIdx = found.headers.indexOf('Статус оплати');
-    if (payStatusIdx !== -1) {
-      sh.getRange(found.rowNum, payStatusIdx + 1).setValue(newPayStatus);
+    // Статус оплати — НЕ чіпаємо якщо вже "Оплачено"
+    if (currentPayStatus !== 'Оплачено') {
+      var newPayStatus = price > 0 ? (dep > 0 ? 'Частково' : 'Не оплачено') : '';
+      var payStatusIdx = found.headers.indexOf('Статус оплати');
+      if (payStatusIdx !== -1 && newPayStatus) {
+        sh.getRange(found.rowNum, payStatusIdx + 1).setValue(newPayStatus);
+      }
     }
 
     // Автозапис платежу в Finance_crm при зміні Завдаток (S)
@@ -638,6 +645,12 @@ function apiUpdateField(params) {
         addPayment(paxData, params.manager || '', delta);
       }
     }
+  }
+
+  // Якщо оператор вручну поставив "Оплачено" → борг = 0
+  if (params.col === 'Статус оплати' && params.value === 'Оплачено') {
+    var debtIdx2 = found.headers.indexOf('Борг');
+    if (debtIdx2 !== -1) sh.getRange(found.rowNum, debtIdx2 + 1).setValue(0);
   }
 
   return { ok: true };
@@ -889,6 +902,7 @@ function apiReassignTrip(params) {
 }
 
 // Оновити зайнятість рейсу
+// [БАҐФІКС] count += seats (Кількість місць), а не count++ (кількість лідів)
 function updateCalendarOccupancy(calId) {
   var calSheet = getSheet(SHEETS.CALENDAR);
   if (!calSheet) return;
@@ -905,10 +919,12 @@ function updateCalendarOccupancy(calId) {
     var info = getAllData(sh);
     var calIdx = info.headers.indexOf('CAL_ID');
     var pibIdx = info.headers.indexOf('Піб');
+    var seatsIdx = info.headers.indexOf('Кількість місць');
     if (calIdx === -1) return;
     for (var i = 0; i < info.data.length; i++) {
       if (String(info.data[i][calIdx]) === String(calId)) {
-        count++;
+        var seats = (seatsIdx !== -1) ? (parseInt(info.data[i][seatsIdx]) || 1) : 1;
+        count += seats;
         if (pibIdx !== -1 && info.data[i][pibIdx]) {
           paxNames.push(String(info.data[i][pibIdx]));
         }

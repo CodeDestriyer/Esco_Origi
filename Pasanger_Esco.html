@@ -49,14 +49,16 @@
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 10px 12px; position: sticky; top: 0; z-index: 100; }
         .header-top { display: flex; align-items: center; gap: 10px; }
         .burger-btn { display: none; width: 32px; height: 32px; background: rgba(255,255,255,0.15); border: none; border-radius: 6px; color: white; font-size: 18px; cursor: pointer; align-items: center; justify-content: center; }
-        .logo { font-size: 13px; font-weight: 800; color: white; white-space: nowrap; }
-        .logo span { color: var(--accent); }
+        .logo { font-size: 13px; font-weight: 800; color: #22d3ee; white-space: nowrap; }
+        .logo span { color: #fbbf24; }
         .search-box { flex: 1; position: relative; }
         .search-input { width: 100%; padding: 8px 12px 8px 32px; border: none; border-radius: 6px; background: rgba(255,255,255,0.15); color: white; font-family: inherit; font-size: 12px; outline: none; }
         .search-input::placeholder { color: rgba(255,255,255,0.6); }
         .search-input:focus { background: rgba(255,255,255,0.25); }
         .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; opacity: 0.7; }
         .header-right { display: flex; align-items: center; gap: 8px; margin-left: auto; overflow: visible; padding-right: 4px; }
+        .hdr-chat-btn { width: 34px; height: 34px; border-radius: 50%; background: #22d3ee; border: 2.5px solid #22d3ee; display: flex; align-items: center; justify-content: center; font-size: 17px; text-decoration: none; transition: all .15s; flex-shrink: 0; box-shadow: 0 2px 8px rgba(34,211,238,0.4); }
+        .hdr-chat-btn:hover { background: #06b6d4; transform: scale(1.1); border-color: #67e8f9; }
         .sync-indicator { display: none; }
         /* Спільний стиль для всіх аватарів в хедері */
         .hdr-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 11px; position: relative; overflow: visible; flex-shrink: 0; }
@@ -209,6 +211,7 @@
         .dir-badge-eu-ua { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #047857; }
         .card-phone { font-size: 14px; font-weight: 700; color: var(--primary); letter-spacing: 0.3px; white-space: nowrap; }
         .card-seats { background: var(--info); color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+        .card-seat-num { background: #e0e7ff; color: #4338ca; padding: 2px 6px; border-radius: 10px; font-size: 9px; font-weight: 700; flex-shrink: 0; }
         .card-date { background: var(--bg-main); color: var(--text-primary); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; flex-shrink: 0; white-space: nowrap; }
         .card-price-wrap { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; margin-left: auto; }
         .card-price { font-size: 14px; font-weight: 700; color: var(--success); flex-shrink: 0; }
@@ -225,7 +228,10 @@
         /* === КАРТКА ЛІДА: Мета-рядок (дата рейсу, дата реєстрації, SmartSender ID) === */
         .card-meta-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .card-meta-tag { font-size: 9px; color: var(--text-secondary); background: var(--bg-main); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
-        .card-smart-id { font-size: 9px; color: #7c3aed; background: #f3e8ff; padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+        .card-note { font-size: 9px; color: var(--text-secondary); background: var(--bg-main); padding: 2px 6px; border-radius: 3px; margin-top: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; transition: color .2s; text-align: center; }
+        .card-smart-id { font-size: 11px; font-weight: 600; color: #7c3aed; background: #f3e8ff; padding: 2px 8px; border-radius: 4px; white-space: nowrap; cursor: pointer; transition: background .15s; }
+        .card-smart-id:hover { background: #e9d5ff; }
+        .card-smart-id:active { background: #d8b4fe; }
 
         .card-right-section { display: flex; align-items: center; justify-content: center; padding: 6px 8px; border-left: 1px solid var(--border); flex-shrink: 0; }
         /* Trip strip — повна ширина внизу картки */
@@ -236,7 +242,7 @@
         .card-trip-icon { font-size: 14px; flex-shrink: 0; }
         .card-trip-text { font-weight: 700; color: var(--text-primary); flex: 1; }
         .card-trip-text.empty { color: var(--warning); font-weight: 600; }
-        .card-trip-detail { font-size: 10px; color: var(--text-secondary); }
+        .card-trip-detail { font-size: 12px; font-weight: 700; color: var(--primary); }
         .card-trip-arrow { color: var(--text-secondary); font-size: 12px; flex-shrink: 0; }
         /* === СТРІЛОЧКА РОЗГОРТКИ МЕНЮ ДІЙ: ▼ крутиться на 180° при відкритті === */
         .card-actions-toggle { width: 28px; height: 28px; border: none; border-radius: 6px; background: var(--bg-main); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; margin-top: auto; color: var(--text-secondary); }
@@ -253,6 +259,11 @@
         .detail-tab:hover { border-color: var(--primary); color: var(--primary); background: #eef2ff; }
         .detail-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
         .detail-tab .tab-count { font-size: 9px; font-weight: 700; background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 8px; }
+        .detail-accordion-tabs.mobile-tabs { flex-wrap: nowrap; gap: 3px; padding: 6px 6px; }
+        .mobile-tabs .detail-tab { flex: 1; justify-content: center; padding: 4px 4px; font-size: 10px; min-width: 0; }
+        .detail-extra-tabs { display: none; flex-wrap: wrap; gap: 4px; padding: 4px 10px 8px; background: #f1f5f9; }
+        .detail-extra-tabs.show { display: flex; }
+        .detail-tab-sub { font-size: 10px !important; padding: 3px 8px !important; }
         .detail-tab.active .tab-count { background: rgba(255,255,255,0.25); }
         .detail-tab-panel { display: none; padding: 10px 12px; }
         .detail-tab-panel.active { display: block; }
@@ -291,11 +302,10 @@
         .card-actions.show { display: flex; padding: 10px 12px; border-top: 1px solid var(--border); }
         .card-actions .btn-card-action { flex: 1 1 auto; min-width: 80px; }
         /* Кнопка "Писати" — відкриває popup з месенджерами */
-        .btn-card-action.btn-write { background: #dbeafe; color: #1d4ed8; }
-        .btn-card-action.btn-write:hover { background: #1d4ed8; color: white; }
-        /* Кнопка "Редагувати" — відкриває форму ліда з заповненими даними */
-        .btn-card-action.btn-edit { background: #fef3c7; color: #92400e; }
-        .btn-card-action.btn-edit:hover { background: #f59e0b; color: white; }
+        .btn-card-action.btn-write { background: #e0f2fe; color: var(--primary); }
+        .btn-card-action.btn-write:hover { background: var(--primary); color: white; }
+        .btn-card-action.btn-edit { background: #e0f2fe; color: var(--primary); }
+        .btn-card-action.btn-edit:hover { background: var(--primary); color: white; }
         /* === POPUP ВИБОРУ МЕСЕНДЖЕРА: Viber, Telegram, WhatsApp, SmartSender ===
            Повноекранний overlay з popup по центру. Відкривається кнопкою "Писати" */
         .messenger-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 200; align-items: center; justify-content: center; }
@@ -307,6 +317,16 @@
         .messenger-popup-item:hover { background: var(--bg-main); border-color: var(--primary); }
         .messenger-popup-cancel { display: block; width: 100%; margin-top: 10px; padding: 10px; border: none; border-radius: 10px; background: var(--bg-main); color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
         .messenger-popup-cancel:hover { background: #e2e8f0; }
+        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @media (max-width: 768px) {
+            .messenger-overlay.show { align-items: center; justify-content: flex-end; }
+            .messenger-popup { border-radius: 12px 0 0 12px; padding: 10px 8px; min-width: 0; max-width: 130px; width: 130px; height: auto; animation: slideInRight .2s ease-out; box-shadow: -4px 0 16px rgba(0,0,0,0.15); }
+            .messenger-popup-grid { grid-template-columns: 1fr; gap: 4px; }
+            .messenger-popup-item { padding: 7px 10px; font-size: 11px; border-radius: 16px; min-height: 0; justify-content: flex-start; background: #f1f5f9; color: var(--text-primary); border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+            .messenger-popup-item:active { transform: scale(0.96); }
+            .messenger-popup-title { font-size: 10px; margin-bottom: 6px; color: var(--text-secondary); }
+            .messenger-popup-cancel { margin-top: 6px; padding: 7px; font-size: 10px; border-radius: 16px; }
+        }
         .btn-card-action { padding: 10px 6px; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-card-action.btn-call { background: var(--primary); color: white; }
         .btn-card-action.btn-delete { background: #fee2e2; color: #dc2626; }
@@ -322,6 +342,15 @@
         .badge-partial { background: #fef3c7; color: #d97706; }
         .badge-unpaid { background: #fee2e2; color: #dc2626; }
         .badge-notrip { background: #fef3c7; color: #d97706; }
+        .badge-clickable { cursor: pointer; display: inline-flex; align-items: center; gap: 1px; }
+        .badge-arrow { font-size: 8px; color: var(--text-secondary); margin-left: 1px; }
+        .badge-clickable .badge { transition: opacity .15s; }
+        .badge-clickable:hover .badge { opacity: 0.8; }
+        .card-status-dd { position: fixed; z-index: 250; background: white; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); padding: 4px; min-width: 160px; display: none; }
+        .card-status-dd.show { display: block; }
+        .card-status-dd-item { padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .card-status-dd-item:hover { background: var(--bg-main); }
+        .card-status-dd-item.active { background: var(--primary); color: white; }
         .badge-debt { background: #fee2e2; color: #dc2626; font-weight: 800; }
         .badge-new24 { background: #fef3c7; color: #d97706; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 8px; animation: pulse-new24 2s ease-in-out infinite; }
         @keyframes pulse-new24 { 0%,100%{opacity:1} 50%{opacity:0.6} }
@@ -734,6 +763,10 @@
         .form-group label { display: block; font-size: 9px; font-weight: 600; color: var(--text-secondary); margin-bottom: 2px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 7px; border: 2px solid var(--border); border-radius: 4px; font-size: 12px; font-family: inherit; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .addr-quick-btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .addr-quick-btn { padding: 3px 8px; font-size: 10px; font-weight: 600; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; font-family: inherit; white-space: nowrap; transition: all .15s; }
+        .addr-quick-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .addr-quick-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .btn-cancel { padding: 10px 20px; background: white; border: 2px solid var(--border); border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
         .btn-cancel:hover { background: #f3f4f6; border-color: #9ca3af; }
@@ -906,10 +939,12 @@
         .bulk-toolbar-btn { padding: 7px 4px; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.2s; min-height: 34px; width: 100%; text-align: center; }
         .bulk-toolbar-btn.select-all { background: rgba(255,255,255,0.2); color: white; }
         .bulk-toolbar-btn.select-all:hover { background: rgba(255,255,255,0.35); }
-        .bulk-toolbar-btn.assign { background: var(--orange); color: white; }
-        .bulk-toolbar-btn.assign:hover { background: #ea580c; }
-        .bulk-toolbar-btn.route { background: #7c3aed; color: white; }
-        .bulk-toolbar-btn.route:hover { background: #6d28d9; }
+        .bulk-toolbar-btn.assign { background: rgba(255,255,255,0.2); color: white; }
+        .bulk-toolbar-btn.assign:hover { background: rgba(255,255,255,0.35); }
+        .bulk-toolbar-btn.route { background: rgba(255,255,255,0.2); color: white; }
+        .bulk-toolbar-btn.route:hover { background: rgba(255,255,255,0.35); }
+        .bulk-toolbar-btn.bulk-delete { background: #dc2626; color: white; }
+        .bulk-toolbar-btn.bulk-delete:hover { background: #b91c1c; }
         .bulk-toolbar-btn.cancel { background: rgba(255,255,255,0.15); color: white; }
         .bulk-toolbar-btn.cancel:hover { background: rgba(255,255,255,0.25); }
         .bulk-trip-dd { position: absolute; bottom: 100%; left: 0; margin-bottom: 6px; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 240px; max-height: 280px; overflow-y: auto; display: none; color: var(--text-primary); }
@@ -947,10 +982,10 @@
             .card-phone { min-width: auto; font-size: 12px; }
             .card-right-section { padding: 4px 6px; }
             .trips-grid { grid-template-columns: 1fr; }
-            /* Mobile: кнопки дій більші для пальців */
-            .btn-card-action { padding: 12px 8px; font-size: 12px; min-height: 44px; }
-            .card-actions { gap: 6px; }
-            .card-actions .btn-card-action { min-width: 70px; flex: 1 1 calc(33% - 6px); }
+            /* Mobile: кнопки дій — компактні, заокруглені */
+            .btn-card-action { padding: 6px 10px; font-size: 10px; min-height: 32px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+            .card-actions { gap: 5px; }
+            .card-actions .btn-card-action { min-width: 60px; flex: 1 1 calc(33% - 5px); }
             /* Mobile: кнопки рейсів/маршрутів */
             .trip-card-actions { flex-wrap: wrap; gap: 6px; }
             .trip-action-btn { padding: 10px 8px; font-size: 12px; min-height: 44px; flex: 1 1 auto; }
@@ -1017,8 +1052,6 @@
         .opt-dist-badge { background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .opt-time-badge { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .opt-eta-badge { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-        .bulk-toolbar-btn.optimize { background: var(--purple); color: white; }
-        .bulk-toolbar-btn.optimize:hover { background: #7c3aed; }
     </style>
 </head>
 <body>
@@ -1038,7 +1071,7 @@
                 <span class="mobile-section-toggle" id="mobileTogglePax">►</span>
             </div>
             <div class="mobile-section-content" id="mobileSectionPax" style="display:none;">
-                <div class="side-menu-item active" id="mobileAllPax" onclick="showPaxView('all'); closeSideMenu();">
+                <div class="side-menu-item" id="mobileAllPax" onclick="showPaxView('all'); closeSideMenu();">
                     <span class="side-menu-item-left">📊 Всі пасажири</span>
                     <span class="side-menu-item-count" id="mobileCountAll">0</span>
                 </div>
@@ -1153,6 +1186,8 @@
             <input class="search-input" type="text" id="globalSearch" placeholder="Пошук по ПІБ або телефону..." oninput="onSearchInput()">
         </div>
         <div class="header-right">
+            <!-- [ПРОЕКТ] Посилання на чати Smart Sender — змінити project= для нового проекту -->
+            <a href="https://messenger.smartsender.com/chats?project=esko-proek-131349" target="_blank" class="hdr-chat-btn" title="Smart Sender Чати">💬</a>
             <div class="presence-bar" id="presenceBar"></div>
             <div class="hdr-avatar user-avatar sync-loading" id="userAvatar" onclick="openManagerModal()" title="Натисніть щоб змінити менеджера">?</div>
         </div>
@@ -1169,7 +1204,7 @@
                 <span class="pc-sidebar-toggle" id="pcTogglePax">▼</span>
             </div>
             <div class="pc-sidebar-content collapsed" id="pcSectionPax">
-                <div class="pc-sidebar-item active" id="pcAllPax" onclick="showPaxView('all')">
+                <div class="pc-sidebar-item" id="pcAllPax" onclick="showPaxView('all')">
                     <span><span class="item-icon">📊</span><span class="item-text">Всі</span></span>
                     <span class="item-count" id="pcCountAll">0</span>
                 </div>
@@ -1493,7 +1528,7 @@
             </div>
             <div style="height:1px;background:var(--border);margin:10px 0;"></div>
             <div class="form-group"><label>Напрямок <span style="color:var(--danger)">*</span></label>
-                <select id="fDirection"><option value="ua-eu">🇺🇦→🇪🇺 Україна-Європа</option><option value="eu-ua">🇪🇺→🇺🇦 Європа-Україна</option></select>
+                <select id="fDirection" onchange="updateAddrSuggestions()"><option value="ua-eu">🇺🇦→🇪🇺 Україна-Європа</option><option value="eu-ua">🇪🇺→🇺🇦 Європа-Україна</option></select>
             </div>
             <div class="form-group"><label>ПіБ <span style="color:var(--danger)">*</span></label><input type="text" id="fName" placeholder="Прізвище Ім'я"></div>
             <div class="form-row">
@@ -1511,12 +1546,12 @@
                 </button>
                 <div id="tripSuggestResult" style="display:none; margin-top:6px; padding:8px 12px; background:#ecfdf5; border-radius:8px; font-size:11px; font-weight:700; color:#059669;"></div>
             </div>
-            <div class="form-group"><label>Адреса відправки</label><input type="text" id="fFrom"></div>
-            <div class="form-group"><label>Адреса прибуття</label><input type="text" id="fTo"></div>
+            <div class="form-group"><label>Адреса відправки</label><input type="text" id="fFrom" list="dlFrom" autocomplete="off"><datalist id="dlFrom"></datalist><div class="addr-quick-btns" id="qbFrom"></div></div>
+            <div class="form-group"><label>Адреса прибуття</label><input type="text" id="fTo" list="dlTo" autocomplete="off"><datalist id="dlTo"></datalist><div class="addr-quick-btns" id="qbTo"></div></div>
             <div class="form-row">
                 <div class="form-group"><label>Ціна квитка</label><input type="text" id="fPrice"></div>
                 <div class="form-group"><label>Валюта квитка</label>
-                    <select id="fCurrency"><option value="UAH">UAH</option><option value="EUR">EUR</option><option value="CHF">CHF</option><option value="USD">USD</option><option value="PLN">PLN</option><option value="CZK">CZK</option></select>
+                    <select id="fCurrency"><option value="CHF">CHF</option><option value="EUR">EUR</option><option value="UAH">UAH</option><option value="USD">USD</option><option value="PLN">PLN</option><option value="CZK">CZK</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -1654,10 +1689,31 @@
     <div class="bulk-toolbar-grid">
         <button class="bulk-toolbar-btn assign" onclick="openBulkTripDropdown(event)">🚐 Рейс</button>
         <button class="bulk-toolbar-btn route" onclick="openRouteAssignModal()">🗺️ Маршрут</button>
-        <button class="bulk-toolbar-btn optimize" onclick="bulkOptimize()">⚡ Оптиміз.</button>
-        <button class="bulk-toolbar-btn" style="background:#f3f4f6;color:#6b7280;" onclick="bulkArchive()">📦 Архів</button>
+        <button class="bulk-toolbar-btn assign" onclick="openTagModal()">🏷 Теги</button>
+        <button class="bulk-toolbar-btn assign" onclick="bulkOptimize()">⚡ Оптиміз.</button>
+        <button class="bulk-toolbar-btn assign" onclick="bulkArchive()">📦 Архів</button>
+        <button class="bulk-toolbar-btn bulk-delete" onclick="bulkDelete()">🗑️ Видалити</button>
     </div>
     <div class="bulk-trip-dd" id="bulkTripDd"></div>
+</div>
+
+<!-- TAG MODAL -->
+<div class="modal-overlay" id="tagModal" onclick="if(event.target===this)closeModal('tagModal')">
+    <div class="modal" style="max-width:400px;">
+        <div class="modal-header">
+            <span class="modal-title" id="tagModalTitle">🏷 Присвоїти тег</span>
+            <button class="modal-close" onclick="closeModal('tagModal')">×</button>
+        </div>
+        <div class="modal-body" style="padding:12px;">
+            <div class="form-group"><label>Назва тегу</label><input type="text" id="tagNameInput" placeholder="Введіть назву тегу..." onkeydown="if(event.key==='Enter')applyTag()"></div>
+            <div id="tagTargetInfo" style="font-size:11px;color:var(--text-secondary);margin-top:4px;"></div>
+            <div id="tagResult" style="display:none;margin-top:8px;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:600;max-height:200px;overflow-y:auto;"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal('tagModal')">Скасувати</button>
+            <button class="btn-save" onclick="applyTag()">🏷 Застосувати</button>
+        </div>
+    </div>
 </div>
 
 <!-- ROUTE ASSIGN MODAL -->
@@ -1845,12 +1901,12 @@
         ctx.textAlign = 'center';
         ctx.fillText('🚐', size / 2, size * 0.42);
         // Текст Esco Express
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#22d3ee';
         ctx.font = '800 ' + (size * 0.18) + 'px Montserrat, Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('ESCO', size / 2, size * 0.62);
-        ctx.fillStyle = '#d90d0d';
+        ctx.fillStyle = '#fbbf24';
         ctx.font = '800 ' + (size * 0.15) + 'px Montserrat, Arial, sans-serif';
         ctx.fillText('EXPRESS', size / 2, size * 0.82);
         return c.toDataURL('image/png');
@@ -1968,7 +2024,7 @@ function initMapsAPI() {
 // ================================================================
 // CONFIG
 // ================================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbwJqVtEEynRIk7Fa77f5dzEvWEmqLvWW5SIRJYe8NiLyezUWBPMMLKZfe0IfyBjSuvW-g/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxWhiRBNZBDi0DB8D3nojJlqEwb17XNhL1o7SbbNsdUVha_ilT1ZihNmk5qMOJkaukg6g/exec';
 const COL_MAP = {
     pax_id:'PAX_ID', smartId:'Ід_смарт', direction:'Напрям', sourceSheet:'SOURCE_SHEET',
     dateCreated:'Дата створення', name:'Піб', phone:'Телефон пасажира',
@@ -1984,7 +2040,7 @@ const COL_MAP = {
     archivedBy:'ARCHIVED_BY', archiveReason:'ARCHIVE_REASON', archiveId:'ARCHIVE_ID',
     calId:'CAL_ID'
 };
-const DEFAULT_OSNOVNE_FIELDS = ['name','phone','phoneReg','direction','date','seats'];
+const DEFAULT_OSNOVNE_FIELDS = ['name','phone','phoneReg','smartId','direction','date','seats'];
 // Поля які можна показати/сховати на картці
 const CARD_FIELD_OPTIONS = [
     { key:'direction', label:'Напрям (UA→EU / EU→UA)' },
@@ -2001,9 +2057,11 @@ const CARD_FIELD_OPTIONS = [
     { key:'dateCreated', label:'Дата реєстрації' },
     { key:'leadStatus', label:'Статус ліда (бейдж)' },
     { key:'payStatus', label:'Статус оплати (бейдж)' },
-    { key:'debt', label:'Борг (бейдж)' }
+    { key:'debt', label:'Борг (бейдж)' },
+    { key:'note', label:'Примітка' },
+    { key:'seatInCar', label:'Місце в авто' }
 ];
-const DEFAULT_CARD_FIELDS = ['direction','phone','seats','date','price','deposit','name','pax_id','smartId','route','leadStatus','payStatus','debt'];
+const DEFAULT_CARD_FIELDS = ['direction','phone','seats','date','price','deposit','name','pax_id','smartId','route','seatInCar','leadStatus','payStatus','debt','note'];
 const OTHER_SECTIONS = [
     { key:'route', title:'🗺️ Маршрут', fields:['from','to','timing','vehicle','seatInCar','calId'] },
     { key:'finance', title:'💰 Фінанси', fields:['price','currency','deposit','currencyDeposit','weight','weightPrice','currencyWeight','debt'] },
@@ -2034,14 +2092,39 @@ function getDetailSections() {
         ...OTHER_SECTIONS
     ];
 }
-const READONLY_FIELDS = ['pax_id','smartId','dateCreated','sourceSheet','cliId','bookingId','rteId','debt','dateArchive','archivedBy','archiveReason','archiveId'];
+const READONLY_FIELDS = ['pax_id','dateCreated','sourceSheet','cliId','bookingId','rteId','dateArchive','archivedBy','archiveReason','archiveId'];
+
+// ── Адреси Швейцарії (зупинки ЖД вокзалів) ──
+const ADDRESS_PRESETS_CH = [
+    { city: 'Zürich', label: 'Цюрих', address: 'Zentrum CH, Sihlquai 41, 8005 Zürich, Швейцарія' },
+    { city: 'St. Gallen', label: 'Сен Гален', address: 'Bahnhofpl. 8b, 9000 St. Gallen, Швейцарія' },
+    { city: 'Winterthur', label: 'Вінтертур', address: 'Bahnhofpl. 23, 8400 Winterthur, Швейцарія' },
+    { city: 'Bern', label: 'Берн', address: 'Diamanthaus, Postfach, 3001 Bern, Швейцарія' },
+    { city: 'Lausanne', label: 'Лозана', address: 'Pl. de la Gare 5A, 1003 Lausanne, Швейцарія' },
+    { city: 'Geneva', label: 'Женева', address: 'Pl. de Cornavin 7, 1201 Genève, Швейцарія' },
+    { city: 'Oftringen', label: 'Офтрінген', address: 'Oftringen' },
+    { city: 'Aarau', label: 'Аарау', address: 'Aarau' },
+    { city: 'Baden', label: 'Баден', address: 'Baden' },
+    { city: 'Wettingen', label: 'Веттінген', address: 'Wettingen' },
+    { city: 'Wil', label: 'Віл', address: 'Wil' },
+    { city: 'Nyon', label: 'Ніон', address: 'Nyon' },
+    { city: 'Vevey', label: 'Веве', address: 'Vevey' },
+    { city: 'Montreux', label: 'Монтре', address: 'Montreux' },
+    { city: 'Yverdon', label: 'Івердон', address: 'Yverdon' },
+    { city: 'Fribourg', label: 'Фрібур', address: 'Fribourg' },
+    { city: 'Payerne', label: 'Паєрн', address: 'Payerne' }
+];
+// Адреса відправки з України (UA→EU) / Адреса прибуття в Україну (EU→UA)
+const ADDRESS_PRESETS_UA = [
+    { city: 'Львів', label: 'Львів', address: 'Львів' }
+];
 const SELECT_OPTIONS = {
-    leadStatus: ['Новий','В роботі','Підтверджено','Відмова'],
+    leadStatus: ['Новий','В роботі','Підтверджено','Відмова','Відмова з завдатком','Відмова без завдатку'],
     payStatus: ['Не оплачено','Частково','Оплачено'],
     crmStatus: ['Активний','Архів'],
-    currency: ['UAH','EUR','CHF','USD','PLN','CZK'],
-    currencyDeposit: ['UAH','EUR','CHF','USD','PLN','CZK'],
-    currencyWeight: ['UAH','EUR','CHF','USD','PLN','CZK'],
+    currency: ['CHF','EUR','UAH','USD','PLN','CZK'],
+    currencyDeposit: ['UAH','CHF','EUR','USD','PLN','CZK'],
+    currencyWeight: ['UAH','CHF','EUR','USD','PLN','CZK'],
     direction: ['Україна-ЄВ','Європа-УК']
 };
 const LAYOUTS = {
@@ -2066,7 +2149,7 @@ let routeSelectedIds = new Set();
 let routeOpenDetailsId = null;
 let routeOpenActionsId = null;
 let currentView = 'pax'; // 'pax' | 'trips' | 'routes'
-let currentDir = 'all';
+let currentDir = 'new24';
 let tripTimeFilter = 'future';
 let tripDirFilter = 'all';
 let tripDateFilter = '';
@@ -2322,17 +2405,57 @@ document.addEventListener('DOMContentLoaded', () => {
     showLoader('Завантаження...');
     Promise.all([
         apiPost('getAll', { sheet: 'all' }),
-        apiPost('getTrips', { filter: {} })
-    ]).then(([paxRes, tripRes]) => {
+        apiPost('getTrips', { filter: {} }),
+        apiPost('getRoutesList', {})
+    ]).then(([paxRes, tripRes, routeRes]) => {
         hideLoader();
-        if (paxRes.ok) passengers = paxRes.data;
+        if (paxRes.ok) {
+            passengers = paxRes.data;
+            // Статуси оплати при завантаженні:
+            // Є ціна → борг = ціна, статус "Не оплачено"
+            // Є завдаток → статус "Частково" (борг не міняємо)
+            // Оплачено → борг = 0
+            passengers.forEach(p => {
+                const price = parseFloat(p['Ціна квитка']) || 0;
+                const dep = parseFloat(p['Завдаток']) || 0;
+                const status = p['Статус оплати'] || '';
+                if (status === 'Оплачено') {
+                    p['Борг'] = 0;
+                } else if (price > 0) {
+                    // Борг завжди = ціна (оператор коригує вручну)
+                    p['Борг'] = price;
+                    if (dep > 0) p['Статус оплати'] = 'Частково';
+                    else p['Статус оплати'] = 'Не оплачено';
+                }
+            });
+        }
         if (tripRes.ok) trips = tripRes.data;
+        if (routeRes.ok && routeRes.data) {
+            allRouteSheets = routeRes.data.map(s => ({
+                sheetName: s.sheetName, rowCount: s.rowCount,
+                paxCount: s.paxCount || 0, parcelCount: s.parcelCount || 0,
+                headers: [], rows: null
+            }));
+            routes = allRouteSheets.filter(s => {
+                const n = (s.sheetName || '');
+                return n.startsWith('Маршрут_') && n !== 'Маршрут_Шаблон';
+            });
+            setCount('pcCountRoutes', routes.length);
+            setCount('mobileCountRoutes', routes.length);
+            renderRouteSidebar();
+        }
         updateAllCounts();
         updateTripFilterDropdown();
         updateTripAutoFilterDropdown();
+        // За замовчуванням показуємо нові за 24 год
+        currentDir = 'new24';
+        currentView = 'pax';
+        updatePcSidebarActive();
+        updateMobileSidebarActive();
+        updateNavActive('pax');
         render();
-        // Підтягуємо маршрути для сайдбару
-        loadRoutes();
+        // Перевірка дублів при завантаженні
+        checkDuplicatesOnLoad();
     }).catch(() => { hideLoader(); render(); });
 
     setInterval(silentSync, 30000);
@@ -2340,6 +2463,92 @@ document.addEventListener('DOMContentLoaded', () => {
     // Автозапуск навчання якщо вже залогінений і ще не проходив
     checkOnboardingAutoStart();
 });
+
+// ================================================================
+// DUPLICATE CHECK ON LOAD
+// ================================================================
+var _duplicateIds = []; // PAX_IDs дублів для фільтрації
+
+// Нормалізує дату до YYYY-MM-DD (з будь-якого формату: ISO, dd.mm.yyyy, yyyy-mm-dd)
+function normalizeDateForDupe(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return '';
+    // ISO: 2026-04-01T00:00:00.000Z → 2026-04-01
+    if (s.includes('T')) return s.split('T')[0];
+    // yyyy-mm-dd
+    if (s.match(/^\d{4}-\d{2}-\d{2}$/)) return s;
+    // dd.mm.yyyy
+    const m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (m) return m[3] + '-' + m[2] + '-' + m[1];
+    return s;
+}
+
+function checkDuplicatesOnLoad() {
+    if (!passengers || passengers.length < 2) return;
+    _duplicateIds = [];
+    const seen = {};
+    for (const p of passengers) {
+        const digits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+        const tail = digits.length >= 9 ? digits.slice(-9) : digits;
+        const date = normalizeDateForDupe(p['Дата виїзду']);
+        if (!tail || !date) continue;
+        const key = tail + '|' + date;
+        if (seen[key]) {
+            if (!seen[key]._added) { _duplicateIds.push(seen[key]['PAX_ID']); seen[key]._added = true; }
+            _duplicateIds.push(p['PAX_ID']);
+        } else {
+            seen[key] = p;
+        }
+    }
+    if (_duplicateIds.length === 0) return;
+
+    // Групуємо для повідомлення
+    const groups = {};
+    for (const id of _duplicateIds) {
+        const p = passengers.find(x => x['PAX_ID'] === id);
+        if (!p) continue;
+        const tail = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+        const date = normalizeDateForDupe(p['Дата виїзду']);
+        const key = (tail.length >= 9 ? tail.slice(-9) : tail) + '|' + date;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+    }
+    const groupCount = Object.keys(groups).length;
+
+    let msg = '⚠️ Знайдено <b>' + groupCount + '</b> дубл' + (groupCount === 1 ? 'ь' : groupCount < 5 ? 'і' : 'ів') + ' (телефон + дата):<br><br>';
+    let i = 0;
+    for (const key in groups) {
+        if (i >= 5) { msg += '... та ще ' + (groupCount - 5) + '<br>'; break; }
+        const g = groups[key];
+        const niceDate = formatTripDate(g[0]['Дата виїзду']);
+        msg += '📞 ' + (g[0]['Телефон пасажира'] || '—') + ' · 📅 ' + niceDate + '<br>';
+        g.forEach(p => { msg += '&nbsp;&nbsp;• ' + (p['Піб'] || '—') + '<br>'; });
+        msg += '<br>';
+        i++;
+    }
+
+    setTimeout(() => {
+        document.getElementById('confirmText').innerHTML = msg;
+        const btns = document.querySelector('#confirmOverlay .confirm-buttons');
+        if (btns) {
+            btns.innerHTML = `
+                <button class="confirm-btn no" onclick="confirmResult(false)">Закрити</button>
+                <button class="confirm-btn yes" onclick="confirmResult(false); showDuplicates();">🔍 Переглянути дублі</button>
+            `;
+        }
+        document.getElementById('confirmOverlay').classList.add('show');
+    }, 1500);
+}
+
+function showDuplicates() {
+    if (!_duplicateIds.length) { showToast('Дублів не знайдено'); return; }
+    // Переключаємо на пасажирів, скидаємо фільтри
+    showPaxView('all');
+    // Вставляємо спеціальний пошуковий запит
+    document.getElementById('globalSearch').value = '__dupes__';
+    render();
+    showToast('Показано ' + _duplicateIds.length + ' дублів');
+}
 
 // ================================================================
 // SILENT SYNC
@@ -2461,6 +2670,9 @@ function showPaxView(dir) {
 
 function showTripsView() {
     currentView = 'trips';
+    // Скидаємо фільтр напрямку рейсів щоб не конфліктував з фільтром пасажирів
+    tripDirFilter = 'all';
+    document.querySelectorAll('.trip-filter-btn[data-dir]').forEach(b => b.classList.toggle('active', b.dataset.dir === 'all'));
     document.getElementById('passengersView').classList.add('hidden');
     document.getElementById('tripsView').classList.add('active');
     document.getElementById('routesView').style.display = 'none';
@@ -3495,10 +3707,14 @@ function getFilteredPassengers() {
             var depDate = formatTripDate(p['Дата виїзду'] || '');
             if (depDate !== paxCalSelectedDate) return false;
         }
-        if (search) {
+        if (search === '__dupes__') {
+            if (!_duplicateIds.includes(p['PAX_ID'])) return false;
+        } else if (search) {
             const name = String(p['Піб'] || '').toLowerCase();
             const phone = String(p['Телефон пасажира'] || '');
-            if (!name.includes(search) && !phone.includes(search)) return false;
+            const smartId = String(p['Ід_смарт'] || '').toLowerCase();
+            const paxId = String(p['PAX_ID'] || '').toLowerCase();
+            if (!name.includes(search) && !phone.includes(search) && !smartId.includes(search) && !paxId.includes(search)) return false;
         }
         return true;
     });
@@ -3557,12 +3773,12 @@ function renderCard(p) {
     const toAddr = p['Адреса прибуття'] || '';       // Маршрут: адреса прибуття
     const smartId = p['Ід_смарт'] || '';             // SmartSender ID (якщо є)
     const dateCreated = formatTripDate(p['Дата створення'] || ''); // Дата реєстрації (без часу)
+    const note = p['Примітка'] || '';                 // Примітка ліда
 
     // Борг
     const priceN = parseFloat(p['Ціна квитка']) || 0;
-    const wpN = parseFloat(p['Ціна багажу']) || 0;
     const depN = parseFloat(p['Завдаток']) || 0;
-    const debt = Math.max(0, priceN + wpN - depN);
+    const debt = parseFloat(p['Борг']) || 0;
 
     const statusClass = leadStatus === 'Новий' ? 'status-new' : leadStatus === 'В роботі' ? 'status-work' : leadStatus === 'Підтверджено' ? 'status-confirmed' : leadStatus === 'Відмова' ? 'status-refused' : '';
     const isRecent24h = isNew24h(p);
@@ -3581,13 +3797,15 @@ function renderCard(p) {
         const trip = trips.find(t => t.cal_id === calId);
         const tripDate = trip ? formatTripDate(trip.date) : '';
         const tripCity = trip ? (trip.city || '') : '';
-        const tripAuto = trip ? (trip.auto_name || '') : '';
+        const tripAutoRaw = trip ? (trip.auto_name || '') : '';
+        const tripAuto = cleanAutoName(tripAutoRaw);
         const tripFree = trip ? (parseInt(trip.free_seats) || 0) : '';
+        const autoClr = getAutoColor(tripAuto);
         tripStrip = `<div class="trip-assign-wrap" style="position:relative">
             <div class="card-trip-strip has-trip" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">
                 <span class="card-trip-icon">🚐</span>
                 <span class="card-trip-text">${tripDate} — ${tripCity}</span>
-                <span class="card-trip-detail">${tripAuto}${tripFree !== '' ? ' · ' + tripFree + ' вільн.' : ''}</span>
+                <span class="card-trip-detail"><span style="background:${autoClr.bg};color:${autoClr.color};padding:1px 8px;border-radius:10px;">${tripAuto}</span> · ${tripFree} вільн.</span>
                 <span class="card-trip-arrow">›</span>
             </div>
             ${tripDDHtml}
@@ -3607,7 +3825,9 @@ function renderCard(p) {
     const lsBadge = leadStatus === 'Новий' ? '<span class="badge badge-new">Новий</span>' :
         leadStatus === 'В роботі' ? '<span class="badge badge-work">В роботі</span>' :
         leadStatus === 'Підтверджено' ? '<span class="badge badge-confirmed">Підтверджено</span>' :
-        leadStatus === 'Відмова' ? '<span class="badge badge-refused">Відмова</span>' : '';
+        leadStatus === 'Відмова' ? '<span class="badge badge-refused">Відмова</span>' :
+        leadStatus === 'Відмова з завдатком' ? '<span class="badge badge-refused">Відм. з завд.</span>' :
+        leadStatus === 'Відмова без завдатку' ? '<span class="badge badge-refused">Відм. без завд.</span>' : '';
 
     // Pay badge
     const payBadge = payStatus === 'Оплачено' ? '<span class="badge badge-paid">Оплачено</span>' :
@@ -3633,8 +3853,8 @@ function renderCard(p) {
                 <div class="card-body">
                     <div class="card-top-row">
                         ${cf.includes('direction') ? `<span class="card-direction ${dirColorClass}">${dirLabel}</span>` : ''}
-                        ${cf.includes('phone') ? `<span class="card-phone">${phone}</span>` : ''}
-                        ${cf.includes('seats') ? `<span class="card-seats">${seats}м</span>` : ''}
+                        ${cf.includes('phone') ? `<span class="card-phone" onclick="event.stopPropagation(); copyToClipboard('${cleanPhone}'); this.style.color='#059669'; setTimeout(()=>this.style.color='',400);" title="Натисни щоб скопіювати" style="cursor:pointer;">${phone}</span>` : ''}
+                        ${cf.includes('seats') ? `<span class="card-seats">${seats}м</span>` : ''}${cf.includes('seatInCar') && seatInCar ? `<span class="card-seat-num">💺${seatInCar}</span>` : ''}
                         ${cf.includes('date') ? `<span class="card-date">${date || '—'}</span>` : ''}
                         ${cf.includes('price') || cf.includes('deposit') ? `<div class="card-price-wrap">
                             ${cf.includes('price') ? `<span class="card-price">${price ? price + ' ' + curr : '—'}</span>` : ''}
@@ -3644,10 +3864,11 @@ function renderCard(p) {
                     <div class="card-row2-wrap">
                         <div class="card-info-row">
                             ${cf.includes('pax_id') ? `<span class="card-id">${id}</span>` : ''}
-                            ${cf.includes('smartId') ? `<span class="card-smart-id">SS: ${smartId || '—'}</span>` : ''}
+                            ${cf.includes('smartId') ? `<span class="card-smart-id" onclick="event.stopPropagation(); copyToClipboard('${smartId || ''}'); this.style.background='#d8b4fe'; setTimeout(()=>this.style.background='',400);" title="Натисни щоб скопіювати">SS: ${smartId || '—'}</span>` : ''}
                             ${cf.includes('name') ? `<span class="card-name">${name}</span>` : ''}
                             ${isRecent24h ? '<span class="badge badge-new24">🆕 NEW</span>' : ''}
-                            ${cf.includes('leadStatus') ? lsBadge : ''} ${cf.includes('payStatus') ? payBadge : ''}
+                            ${cf.includes('leadStatus') ? `<span class="badge-clickable" onclick="event.stopPropagation(); toggleCardStatusDD('${id}','leadStatus',this)">${lsBadge || '<span class="badge" style="background:#f1f5f9;color:#6b7280;">Статус</span>'}<span class="badge-arrow">▾</span></span>` : ''}
+                            ${cf.includes('payStatus') ? `<span class="badge-clickable" onclick="event.stopPropagation(); toggleCardStatusDD('${id}','payStatus',this)">${payBadge || '<span class="badge" style="background:#f1f5f9;color:#6b7280;">Оплата</span>'}<span class="badge-arrow">▾</span></span>` : ''}
                             ${cf.includes('debt') && debt > 0 ? '<span class="badge badge-debt">Борг: '+debt+'</span>' : ''}
                         </div>
                         ${cf.includes('route') ? routeHtml : ''}
@@ -3655,6 +3876,7 @@ function renderCard(p) {
                             ${cf.includes('tripDate') && tripDateStr ? '<span class="card-meta-tag">🗓 Рейс: '+tripDateStr+'</span>' : ''}
                             ${cf.includes('dateCreated') && dateCreated && dateCreated !== '—' ? '<span class="card-meta-tag">📅 Реєстр: '+dateCreated+'</span>' : ''}
                         </div>
+                        <div class="card-note" onclick="event.stopPropagation(); editCardNote('${id}','${(p._sheet||'').replace(/'/g,"\\'")}',this)" title="${note ? 'Клік — редагувати' : 'Клік — додати примітку'}">📝 ${note || '<span style="opacity:0.4">додати примітку...</span>'}</div>
                     </div>
                 </div>
                 <!-- Стрілочка ▼ розгортки меню дій (крутиться 180° при open) -->
@@ -3670,8 +3892,9 @@ function renderCard(p) {
             <button class="btn-card-action btn-call" onclick="window.open('tel:${cleanPhone}')">📞 Дзвінок</button>
             <button class="btn-card-action btn-write" onclick="event.stopPropagation(); openMessengerPopup('${cleanPhone}','${smartId}')">✉️ Писати</button>
             <button class="btn-card-action btn-edit" onclick="event.stopPropagation(); openEditPax('${id}')">✏️ Редагувати</button>
-            <button class="btn-card-action" style="background:#ede9fe;color:#7c3aed;" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">🚐 Рейс</button>
-            <button class="btn-card-action" style="background:#f3f4f6;color:#6b7280;" onclick="event.stopPropagation(); archivePax('${id}','${name}')">📦 Архів</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); toggleTripAssignDD('${id}')">🚐 Рейс</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); openTagModal('${id}')">🏷 Тег</button>
+            <button class="btn-card-action btn-write" onclick="event.stopPropagation(); archivePax('${id}','${name}')">📦 Архів</button>
             <button class="btn-card-action btn-delete" onclick="deletePax('${id}','${p._sheet||''}','${name}')">🗑️ Видалити</button>
         </div>
     </div>`;
@@ -3724,16 +3947,44 @@ function renderDetails(p) {
     const savedTab = activeDetailTab[paxId] || sections[0].key;
     const savedIdx = sections.findIndex(s => s.key === savedTab);
     const activeIdx = savedIdx >= 0 ? savedIdx : 0;
+    const isMobile = window.innerWidth <= 768;
+
+    // Мобільна версія: Основне, Фінанси, Маршрут, ⚙️ (Додатково)
+    const MOBILE_MAIN_KEYS = ['osnovne', 'finance', 'route'];
+    const MOBILE_SHORT_TITLES = { 'osnovne': '👤 Осн.', 'finance': '💰 Фін.', 'route': '🗺️ Марш.' };
 
     // Tabs row (horizontal)
-    let tabsHtml = '<div class="detail-accordion-tabs">';
+    let tabsHtml = `<div class="detail-accordion-tabs${isMobile ? ' mobile-tabs' : ''}">`;
     sections.forEach((section, i) => {
+        if (isMobile && !MOBILE_MAIN_KEYS.includes(section.key)) return;
+        const label = isMobile ? (MOBILE_SHORT_TITLES[section.key] || section.title) : section.title;
         const countLabel = section.async ? '' : `<span class="tab-count">${section.fields.length}</span>`;
         tabsHtml += `<div class="detail-tab ${i===activeIdx?'active':''}" onclick="event.stopPropagation(); switchDetailTab('${paxId}','${section.key}',this)" data-section="${section.key}">
-            ${section.title} ${countLabel}
+            ${label} ${countLabel}
         </div>`;
     });
+    if (isMobile) {
+        const extraActive = !MOBILE_MAIN_KEYS.includes(sections[activeIdx]?.key);
+        tabsHtml += `<div class="detail-tab ${extraActive?'active':''}" onclick="event.stopPropagation(); toggleMobileExtra('${paxId}',this)" data-section="_extra">
+            ⚙️
+        </div>`;
+    }
     tabsHtml += '</div>';
+
+    // Мобільні підвкладки "Додатково"
+    if (isMobile) {
+        const extraSections = sections.filter(s => !MOBILE_MAIN_KEYS.includes(s.key));
+        const isExtraTabActive = !MOBILE_MAIN_KEYS.includes(sections[activeIdx]?.key);
+        tabsHtml += `<div class="detail-extra-tabs ${isExtraTabActive?'show':''}" id="extraTabs-${paxId}">`;
+        extraSections.forEach(section => {
+            const si = sections.indexOf(section);
+            const countLabel = section.async ? '' : `<span class="tab-count">${section.fields.length}</span>`;
+            tabsHtml += `<div class="detail-tab detail-tab-sub ${si===activeIdx?'active':''}" onclick="event.stopPropagation(); switchDetailTab('${paxId}','${section.key}',this)" data-section="${section.key}">
+                ${section.title} ${countLabel}
+            </div>`;
+        });
+        tabsHtml += '</div>';
+    }
 
     // Panels (render active tab immediately)
     let panelsHtml = '';
@@ -3754,6 +4005,14 @@ function renderDetails(p) {
     }
 
     return tabsHtml + panelsHtml;
+}
+
+function toggleMobileExtra(paxId, btn) {
+    const container = btn.closest('.card-details');
+    if (!container) return;
+    const extraTabs = container.querySelector('#extraTabs-' + paxId);
+    if (!extraTabs) return;
+    extraTabs.classList.toggle('show');
 }
 
 function switchDetailTab(paxId, sectionKey, tabEl) {
@@ -3916,7 +4175,6 @@ function toggleCardActions(id) {
         openActionsId = null;
     } else {
         openActionsId = id;
-        // Закриваємо деталі при відкритті дій — щоб не було хаосу на мобільному
         if (openDetailsId === id) {
             openDetailsId = null;
             delete activeDetailTab[id];
@@ -3936,12 +4194,12 @@ function toggleCardActions(id) {
 function openMessengerPopup(phone, smartId) {
     const grid = document.getElementById('messengerGrid');
     const cleanPhone = (phone || '').replace(/[^+\d]/g, '');
-    var smartBtn = (smartId && smartId.trim()) ? `<button class="messenger-popup-item" onclick="openMessenger('smartsender','${smartId}')">🤖 SmartSender</button>` : '';
+    var smartBtn = `<button class="messenger-popup-item" onclick="openSmartSender('${smartId || ''}')">🤖 <span style="color:#ff6600">Smart</span></button>`;
     grid.innerHTML = `
-        <button class="messenger-popup-item" onclick="closeMessengerPopup(); window.open('tel:${cleanPhone}')" style="background:var(--primary);color:white;border-color:var(--primary)">📞 Дзвінок</button>
-        <button class="messenger-popup-item" onclick="openMessenger('viber','${cleanPhone}')" style="background:#7360f2;color:white;border-color:#7360f2">💬 Viber</button>
-        <button class="messenger-popup-item" onclick="openMessenger('telegram','${cleanPhone}')" style="background:#0088cc;color:white;border-color:#0088cc">✈️ Telegram</button>
-        <button class="messenger-popup-item" onclick="openMessenger('whatsapp','${cleanPhone}')" style="background:#25d366;color:white;border-color:#25d366">📱 WhatsApp</button>
+        <button class="messenger-popup-item" onclick="closeMessengerPopup(); window.open('tel:${cleanPhone}')">📞 <span style="color:var(--primary)">Дзвінок</span></button>
+        <button class="messenger-popup-item" onclick="openMessenger('viber','${cleanPhone}')">💬 <span style="color:#7360f2">Viber</span></button>
+        <button class="messenger-popup-item" onclick="openMessenger('telegram','${cleanPhone}')">✈️ <span style="color:#0088cc">Telegram</span></button>
+        <button class="messenger-popup-item" onclick="openMessenger('whatsapp','${cleanPhone}')">📱 <span style="color:#25d366">WhatsApp</span></button>
         ${smartBtn}
     `;
     document.getElementById('messengerOverlay').classList.add('show');
@@ -3970,10 +4228,20 @@ function openMessenger(type, contact) {
         case 'whatsapp':
             window.open('https://wa.me/' + phoneNoPlus, '_blank');
             break;
-        case 'smartsender':
-            window.open('https://smartsender.com/contacts/' + encodeURIComponent(contact), '_blank');
-            break;
     }
+}
+
+// ── Smart Sender: копіює ID + відкриває консоль пошуку контактів ──
+// [ПРОЕКТ] Посилання Smart Sender — змінити для нового проекту:
+const SMART_SENDER_CONSOLE_URL = 'https://console.smartsender.com/contacts?project=esko-proek-131349';
+function openSmartSender(smartId) {
+    closeMessengerPopup();
+    if (!smartId || !smartId.trim()) { showToast('⚠️ Немає Ід_смарт'); return; }
+    // Тихе копіювання ID в буфер
+    copyToClipboard(smartId.trim());
+    showToast('📋 SS ID скопійовано — вставте в пошук');
+    // Відкриваємо консоль Smart Sender
+    window.open(SMART_SENDER_CONSOLE_URL, '_blank');
 }
 
 // ================================================================
@@ -4040,6 +4308,7 @@ function openEditPax(id) {
     const saveBtn = document.getElementById('paxSaveBtn');
     if (saveBtn) saveBtn.textContent = '💾 Оновити';
     openModal('passengerModal');
+    updateAddrSuggestions();
 }
 
 // ================================================================
@@ -4053,8 +4322,8 @@ function startInlineEdit(paxId, key, sheet) {
     const el = document.getElementById('dv-' + paxId + '-' + key);
     if (!el) return;
 
-    // Seat picker — visual modal instead of text input
-    if (key === 'seatInCar') {
+    // Місце в авто — завжди текстове поле (вільний ввід)
+    if (false && key === 'seatInCar' && p['CAL_ID']) {
         openSeatPicker(paxId, sheet);
         return;
     }
@@ -4066,9 +4335,19 @@ function startInlineEdit(paxId, key, sheet) {
     } else if (key === 'date') {
         el.innerHTML = `<input class="detail-inline-edit" type="date" value="${val}" onchange="saveInline('${paxId}','${key}','${sheet}',this.value)" onblur="cancelInline('${paxId}','${key}')">`;
         el.querySelector('input').focus();
+    } else if (key === 'from' || key === 'to') {
+        // Address field — input + quick-select buttons
+        const dir = getDirectionCode(p['Напрям'] || '');
+        const isUaEu = dir === 'ua-eu';
+        const presets = (key === 'from')
+            ? (isUaEu ? ADDRESS_PRESETS_UA : ADDRESS_PRESETS_CH)
+            : (isUaEu ? ADDRESS_PRESETS_CH : ADDRESS_PRESETS_UA);
+        const suggestHtml = getAddrSuggestHtml(paxId, key, sheet, presets);
+        el.innerHTML = `<input class="detail-inline-edit" type="text" value="${val}" onkeydown="if(event.key==='Enter')saveInline('${paxId}','${key}','${sheet}',this.value);if(event.key==='Escape')cancelInline('${paxId}','${key}')" onblur="setTimeout(()=>{if(!document.querySelector('.addr-quick-btn:hover'))saveInline('${paxId}','${key}','${sheet}',document.querySelector('#dv-${paxId}-${key} input')?.value||'')},200)">${suggestHtml}`;
+        focusEnd(el.querySelector('input'));
     } else {
         el.innerHTML = `<input class="detail-inline-edit" type="text" value="${val}" onkeydown="if(event.key==='Enter')saveInline('${paxId}','${key}','${sheet}',this.value);if(event.key==='Escape')cancelInline('${paxId}','${key}')" onblur="saveInline('${paxId}','${key}','${sheet}',this.value)">`;
-        el.querySelector('input').focus();
+        focusEnd(el.querySelector('input'));
     }
 }
 
@@ -4110,16 +4389,22 @@ async function saveInline(paxId, key, sheet, newVal) {
     const res = await apiPost('updateField', payload);
     if (res.ok) {
         showToast('✅ Збережено');
-        // Інвалідуємо кеш платежів при зміні фінансових полів
+        // Оновлюємо статус оплати при зміні фінансових полів
         if (['deposit','price','weightPrice'].includes(key)) {
             delete paymentsCache[paxId];
-            // Оновлюємо локальний борг та статус оплати
-            const debt = calcDebtFrontend(p);
-            p['Борг'] = debt;
+            const priceVal = parseFloat(p['Ціна квитка']) || 0;
             const dep = parseFloat(p['Завдаток']) || 0;
-            if (dep === 0) p['Статус оплати'] = 'Не оплачено';
-            else if (debt > 0) p['Статус оплати'] = 'Частково';
-            else p['Статус оплати'] = 'Оплачено';
+            const currentPayStatus = p['Статус оплати'] || '';
+            // Якщо ціну змінили — борг = нова ціна (оператор вручну коригує)
+            if (key === 'price') p['Борг'] = priceVal;
+            // Статус: оплачено не чіпаємо, інакше — по завдатку
+            if (currentPayStatus !== 'Оплачено' && priceVal > 0) {
+                p['Статус оплати'] = dep > 0 ? 'Частково' : 'Не оплачено';
+            }
+        }
+        // Оператор вручну поставив "Оплачено" → борг = 0
+        if (key === 'payStatus' && newVal === 'Оплачено') {
+            p['Борг'] = 0;
         }
         render();
     } else {
@@ -4136,12 +4421,101 @@ function formatFieldDisplay(key, val) {
     return val;
 }
 
+// Фокус з курсором в кінці тексту
+function focusEnd(input) {
+    input.focus();
+    var v = input.value; input.value = ''; input.value = v;
+}
+
 function cancelInline(paxId, key) {
     const p = passengers.find(x => x['PAX_ID'] === paxId);
     if (!p) return;
     const colName = COL_MAP[key] || key;
     const el = document.getElementById('dv-' + paxId + '-' + key);
     if (el) el.textContent = formatFieldDisplay(key, p[colName]);
+}
+
+// ── Швидка зміна статусу на картці ──
+function toggleCardStatusDD(paxId, key, el) {
+    // Якщо вже відкритий — закриваємо
+    const existing = document.querySelector('.card-status-dd.show');
+    if (existing) { existing.remove(); if (el._statusDDOpen) { el._statusDDOpen = false; return; } }
+    el._statusDDOpen = true;
+
+    const p = passengers.find(x => x['PAX_ID'] === paxId);
+    if (!p) return;
+    const colName = COL_MAP[key] || key;
+    const currentVal = p[colName] || '';
+    const options = SELECT_OPTIONS[key] || [];
+
+    const dd = document.createElement('div');
+    dd.className = 'card-status-dd show';
+    dd.innerHTML = options.map(opt =>
+        `<div class="card-status-dd-item ${opt === currentVal ? 'active' : ''}" onclick="event.stopPropagation(); pickCardStatus('${paxId}','${key}','${opt.replace(/'/g,"\\'")}',this)">${opt}</div>`
+    ).join('');
+    document.body.appendChild(dd);
+
+    // Позиціонуємо під елементом
+    const rect = el.getBoundingClientRect();
+    dd.style.top = (rect.bottom + 4) + 'px';
+    dd.style.left = Math.max(4, Math.min(rect.left, window.innerWidth - 170)) + 'px';
+
+    // Закриваємо при кліку деінде
+    setTimeout(() => {
+        const close = (e) => { if (!dd.contains(e.target) && !el.contains(e.target)) { dd.remove(); el._statusDDOpen = false; document.removeEventListener('click', close); } };
+        document.addEventListener('click', close);
+    }, 10);
+}
+
+async function pickCardStatus(paxId, key, newVal, itemEl) {
+    const p = passengers.find(x => x['PAX_ID'] === paxId);
+    if (!p) return;
+    const colName = COL_MAP[key] || key;
+    const oldVal = p[colName] || '';
+    if (newVal === oldVal) { itemEl.closest('.card-status-dd')?.remove(); return; }
+
+    p[colName] = newVal;
+    // Якщо статус оплати → "Оплачено", скидаємо борг
+    if (key === 'payStatus' && newVal === 'Оплачено') p['Борг'] = 0;
+
+    itemEl.closest('.card-status-dd')?.remove();
+    render();
+
+    const shName = p._sheet || '';
+    const res = await apiPost('updateField', { sheet: shName, pax_id: paxId, col: colName, value: newVal });
+    if (res.ok) {
+        showToast('✅ ' + colName + ': ' + newVal);
+    } else {
+        p[colName] = oldVal;
+        showToast('❌ ' + (res.error || 'Помилка'));
+        render();
+    }
+}
+
+// ── Редагування примітки прямо на картці ──
+function editCardNote(paxId, sheet, el) {
+    const p = passengers.find(x => x['PAX_ID'] === paxId);
+    if (!p) return;
+    const val = p['Примітка'] || '';
+    el.innerHTML = `<input class="detail-inline-edit" type="text" value="${val.replace(/"/g,'&quot;')}" placeholder="Введіть примітку..." style="width:100%;font-size:10px;text-align:center;" onkeydown="if(event.key==='Enter')saveCardNote('${paxId}','${sheet}',this.value,this);if(event.key==='Escape'){event.stopPropagation();render();}" onblur="saveCardNote('${paxId}','${sheet}',this.value,this)">`;
+    el.querySelector('input').focus();
+}
+
+async function saveCardNote(paxId, sheet, newVal, inputEl) {
+    const p = passengers.find(x => x['PAX_ID'] === paxId);
+    if (!p) return;
+    const oldVal = p['Примітка'] || '';
+    if (newVal === oldVal) { render(); return; }
+    p['Примітка'] = newVal;
+    render();
+    const res = await apiPost('updateField', { sheet: sheet || p._sheet || '', pax_id: paxId, col: 'Примітка', value: newVal });
+    if (res.ok) {
+        showToast('✅ Примітку збережено');
+    } else {
+        p['Примітка'] = oldVal;
+        showToast('❌ ' + (res.error || 'Помилка'));
+        render();
+    }
 }
 
 // ================================================================
@@ -4161,7 +4535,7 @@ function openAddModal() {
     document.getElementById('fSeats').value = '1';
     document.getElementById('fDate').value = '';
     document.getElementById('fDirection').value = currentDir === 'eu-ua' ? 'eu-ua' : 'ua-eu';
-    document.getElementById('fCurrency').value = 'UAH';
+    document.getElementById('fCurrency').value = 'CHF';
     document.getElementById('fCurrencyDeposit').value = 'UAH';
     document.getElementById('fCurrencyWeight').value = 'UAH';
     // Скидаємо SMS парсер
@@ -4173,6 +4547,51 @@ function openAddModal() {
     const saveBtn = document.getElementById('paxSaveBtn');
     if (saveBtn) saveBtn.textContent = '💾 Зберегти';
     openModal('passengerModal');
+    updateAddrSuggestions();
+}
+
+// ── Адреси: швидкий вибір + datalist ──
+function updateAddrSuggestions() {
+    const dir = document.getElementById('fDirection').value; // 'ua-eu' | 'eu-ua'
+    const isUaEu = dir === 'ua-eu';
+    // UA→EU: відправка=UA, прибуття=CH  |  EU→UA: відправка=CH, прибуття=UA
+    const fromPresets = isUaEu ? ADDRESS_PRESETS_UA : ADDRESS_PRESETS_CH;
+    const toPresets   = isUaEu ? ADDRESS_PRESETS_CH : ADDRESS_PRESETS_UA;
+    fillAddrDatalist('dlFrom', fromPresets);
+    fillAddrDatalist('dlTo', toPresets);
+    fillAddrQuickBtns('qbFrom', 'fFrom', fromPresets);
+    fillAddrQuickBtns('qbTo', 'fTo', toPresets);
+}
+
+function fillAddrDatalist(dlId, presets) {
+    const dl = document.getElementById(dlId);
+    if (!dl) return;
+    dl.innerHTML = presets.map(p => `<option value="${p.address}">${p.label} — ${p.city}</option>`).join('');
+}
+
+function fillAddrQuickBtns(containerId, inputId, presets) {
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    c.innerHTML = presets.map(p =>
+        `<button type="button" class="addr-quick-btn" onclick="pickAddr('${inputId}','${p.address.replace(/'/g,"\\'")}',this)" title="${p.address}">${p.label}</button>`
+    ).join('');
+}
+
+function pickAddr(inputId, address, btn) {
+    const inp = document.getElementById(inputId);
+    if (inp) inp.value = address;
+    // Toggle active state
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.addr-quick-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// Генерує HTML кнопок вибору адреси для inline edit
+function getAddrSuggestHtml(paxId, key, sheet, presets) {
+    return '<div class="addr-quick-btns" style="margin-top:4px">' +
+        presets.map(p =>
+            `<button type="button" class="addr-quick-btn" onclick="saveInline('${paxId}','${key}','${sheet}','${p.address.replace(/'/g,"\\'")}')">${p.label}</button>`
+        ).join('') + '</div>';
 }
 
 // ================================================================
@@ -4542,37 +4961,22 @@ async function savePassenger() {
         return;
     }
 
-    // CREATE MODE — локальна перевірка дублікатів (надійніша за API)
-    const nameLower = name.toLowerCase().trim();
-    const phoneDigits = phone.replace(/\D/g, ''); // тільки цифри
-    // Також перевіряємо останні 9 цифр (без коду країни)
+    // CREATE MODE — перевірка дублікатів: Телефон + Дата виїзду
+    const phoneDigits = phone.replace(/\D/g, '');
     const phoneTail = phoneDigits.length >= 9 ? phoneDigits.slice(-9) : phoneDigits;
-    let localExact = null, localSoft = null;
-    for (const p of passengers) {
-        const pName = String(p['Піб'] || '').toLowerCase().trim();
-        const pDigits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
-        const pTail = pDigits.length >= 9 ? pDigits.slice(-9) : pDigits;
-        const pDate = String(p['Дата виїзду'] || '').trim();
-        const phoneMatch = phoneTail && pTail && (phoneDigits === pDigits || phoneTail === pTail);
-        if (pName === nameLower && phoneMatch && pDate === date && nameLower && date) {
-            localExact = p; break;
-        }
-        if (!localSoft && pName === nameLower && phoneMatch && nameLower) {
-            localSoft = p;
-        }
-    }
-    if (localExact) {
-        saveBtn.disabled = false; saveBtn.textContent = origText; saveBtn.style.opacity = '';
-        showConfirm('❌ Точний дублікат!\n\n' + localExact['Піб'] + '\n' + localExact['Телефон пасажира'] + '\n\nТакий запис вже існує. Скасувати?', function(yes) {});
-        return;
-    }
-    if (localSoft) {
-        const confirmed = await new Promise(resolve => {
-            showConfirm('⚠️ Схожий запис знайдено!\n\n' + localSoft['Піб'] + '\n' + localSoft['Телефон пасажира'] + '\n\nЗберегти все одно?', resolve);
+    const normDate = normalizeDateForDupe(date);
+    if (phoneTail && normDate) {
+        const localExact = passengers.find(p => {
+            const pDigits = String(p['Телефон пасажира'] || '').replace(/\D/g, '');
+            const pTail = pDigits.length >= 9 ? pDigits.slice(-9) : pDigits;
+            return pTail && (phoneDigits === pDigits || phoneTail === pTail) && normalizeDateForDupe(p['Дата виїзду']) === normDate;
         });
-        if (!confirmed) {
+        if (localExact) {
             saveBtn.disabled = false; saveBtn.textContent = origText; saveBtn.style.opacity = '';
-            return;
+            const confirmed = await new Promise(resolve => {
+                showConfirm('⚠️ Можливий дублікат!\n\nТелефон + дата збігаються:\n' + (localExact['Піб'] || '—') + '\n📞 ' + localExact['Телефон пасажира'] + '\n📅 ' + localExact['Дата виїзду'] + '\n\nДодати все одно?', resolve);
+            });
+            if (!confirmed) return;
         }
     }
 
@@ -5174,7 +5578,7 @@ function addVehicleBuilder() {
                 </div>
             </div>
             <div class="bs-field"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                <input type="checkbox" class="vb-reserve" style="width:16px;height:16px;">
+                <input type="checkbox" class="vb-reserve" style="width:16px;height:16px;" onchange="toggleReserve(${idx},this.checked)">
                 <span class="bs-label" style="margin:0;">+ Резервне R1</span>
             </label></div>
         </div>
@@ -5189,8 +5593,21 @@ function selectLayout(el, idx) {
     el.classList.add('active');
     const layout = el.dataset.layout;
     const all = LAYOUTS[layout] || [];
-    const seats = layout === 'bus' ? 20 : all.filter(s => s !== 'D').length;
-    document.getElementById('vbSeats-' + idx).textContent = seats;
+    const baseSeats = layout === 'bus' ? 20 : all.filter(s => s !== 'D').length;
+    const vb = document.getElementById('vb-' + idx);
+    const hasReserve = vb ? vb.querySelector('.vb-reserve')?.checked : false;
+    document.getElementById('vbSeats-' + idx).textContent = baseSeats + (hasReserve ? 1 : 0);
+    updateSeatPreview(idx);
+}
+
+function toggleReserve(idx, checked) {
+    const vb = document.getElementById('vb-' + idx);
+    if (!vb) return;
+    const layoutEl = vb.querySelector('.vb-layouts .layout-option.active');
+    const layout = layoutEl ? layoutEl.dataset.layout : '1-3-3';
+    const all = LAYOUTS[layout] || [];
+    const baseSeats = layout === 'bus' ? 20 : all.filter(s => s !== 'D').length;
+    document.getElementById('vbSeats-' + idx).textContent = baseSeats + (checked ? 1 : 0);
     updateSeatPreview(idx);
 }
 
@@ -5866,7 +6283,7 @@ function renderPaxCalendar() {
     var daysInMonth = new Date(y, m + 1, 0).getDate();
     var today = new Date(); today.setHours(0,0,0,0);
 
-    // Рахуємо пасажирів по датах
+    // Рахуємо місця по датах (не лідів, а суму "Кількість місць")
     var dateCounts = {};
     passengers.forEach(function(p) {
         if ((p['Статус CRM'] || 'Активний') === 'Архів') return;
@@ -5878,7 +6295,8 @@ function renderPaxCalendar() {
         var pm = parseInt(parts[1], 10) - 1;
         var py = parseInt(parts[2], 10);
         if (py === y && pm === m) {
-            dateCounts[dep] = (dateCounts[dep] || 0) + 1;
+            var seats = parseInt(p['Кількість місць']) || 1;
+            dateCounts[dep] = (dateCounts[dep] || 0) + seats;
         }
     });
 
@@ -5928,7 +6346,16 @@ function selectPaxCalDate(dateStr) {
         paxCalSelectedDate = null;
     } else {
         paxCalSelectedDate = dateStr;
-        // На мобільному — закрити бокове меню щоб одразу бачити пасажирів
+        // Переключаємо на вид пасажирів (якщо були в маршрутах/рейсах)
+        currentView = 'pax';
+        currentDir = 'all';
+        document.getElementById('passengersView').classList.remove('hidden');
+        document.getElementById('tripsView').classList.remove('active');
+        document.getElementById('routesView').style.display = 'none';
+        document.getElementById('archiveView').style.display = 'none';
+        updatePcSidebarActive();
+        updateMobileSidebarActive();
+        updateNavActive('pax');
         if (window.innerWidth <= 900) closeSideMenu();
     }
     renderPaxCalendar();
@@ -6048,6 +6475,9 @@ function showToast(msg, duration) {
 
 function showConfirm(text, cb) {
     document.getElementById('confirmText').innerHTML = text.replace(/\n/g, '<br>');
+    // Відновлюємо стандартні кнопки (могли бути замінені checkDuplicatesOnLoad)
+    const btns = document.querySelector('#confirmOverlay .confirm-buttons');
+    if (btns) btns.innerHTML = '<button class="confirm-btn no" onclick="confirmResult(false)">Скасувати</button><button class="confirm-btn yes" onclick="confirmResult(true)">Підтвердити</button>';
     confirmCallback = cb;
     document.getElementById('confirmOverlay').classList.add('show');
 }
@@ -7287,6 +7717,26 @@ function archivePax(paxId, name) {
     });
 }
 
+// ── Масове видалення (архів з позначкою "Видалено") ──
+function bulkDelete() {
+    const ids = Array.from(selectedIds);
+    if (!ids.length) return;
+    showConfirm('🗑️ Видалити ' + ids.length + ' пасажир(ів)?\n\n(Переміщення в архів з позначкою "Видалено")', async function(yes) {
+        if (!yes) return;
+        showLoader('Видалення ' + ids.length + ' записів...');
+        const res = await apiPost('deletePassenger', { pax_ids: ids });
+        hideLoader();
+        if (res.ok) {
+            passengers = passengers.filter(x => !ids.includes(x['PAX_ID']));
+            showToast('✅ Видалено ' + ids.length + ' записів');
+            clearSelection();
+            render(); updateAllCounts();
+        } else {
+            showToast('❌ ' + (res.error || 'Помилка'));
+        }
+    });
+}
+
 // ── Масове архівування ──
 function bulkArchive() {
     const ids = Array.from(selectedIds);
@@ -7306,6 +7756,113 @@ function bulkArchive() {
             showToast('❌ ' + (res.error || 'Помилка'));
         }
     });
+}
+
+// ── Smart Sender: Теги ──
+const TAG_API_URL = 'https://botisystem.com/Esco_Express/smart_teg.php';
+var _tagTargetIds = []; // PAX_IDs для яких застосовуємо тег
+
+function openTagModal(singlePaxId) {
+    _tagTargetIds = [];
+    if (singlePaxId) {
+        _tagTargetIds = [singlePaxId];
+    } else {
+        _tagTargetIds = Array.from(selectedIds);
+    }
+    if (!_tagTargetIds.length) { showToast('Оберіть лідів'); return; }
+
+    // Перевіряємо що всі мають Ід_смарт
+    const noSmart = _tagTargetIds.filter(id => {
+        const p = passengers.find(x => x['PAX_ID'] === id);
+        return !p || !p['Ід_смарт'] || String(p['Ід_смарт']).trim() === '';
+    });
+
+    document.getElementById('tagNameInput').value = '';
+    const resultEl = document.getElementById('tagResult');
+    resultEl.style.display = 'none';
+    resultEl.innerHTML = '';
+
+    const names = _tagTargetIds.map(id => {
+        const p = passengers.find(x => x['PAX_ID'] === id);
+        const ss = p ? String(p['Ід_смарт'] || '').trim() : '';
+        return (p ? (p['Піб'] || id) : id) + (ss ? ' <span style="color:#7c3aed;">(SS: ' + ss + ')</span>' : '');
+    });
+    let info = _tagTargetIds.length === 1
+        ? 'Лід: <b>' + names[0] + '</b>'
+        : 'Лідів: <b>' + _tagTargetIds.length + '</b> (' + names.slice(0, 3).join(', ') + (_tagTargetIds.length > 3 ? '...' : '') + ')';
+    if (noSmart.length > 0) {
+        info += '<br><span style="color:var(--danger);">⚠️ ' + noSmart.length + ' без Ід_смарт — буде пропущено</span>';
+    }
+    document.getElementById('tagTargetInfo').innerHTML = info;
+    document.getElementById('tagModalTitle').textContent = _tagTargetIds.length === 1 ? '🏷 Присвоїти тег' : '🏷 Теги (' + _tagTargetIds.length + ' лідів)';
+    openModal('tagModal');
+    setTimeout(() => document.getElementById('tagNameInput').focus(), 100);
+}
+
+async function applyTag() {
+    const tagName = document.getElementById('tagNameInput').value.trim();
+    if (!tagName) { showToast('Введіть назву тегу'); return; }
+
+    const targets = _tagTargetIds.map(id => {
+        const p = passengers.find(x => x['PAX_ID'] === id);
+        return { paxId: id, smartId: p ? String(p['Ід_смарт'] || '').trim() : '', name: p ? (p['Піб'] || id) : id };
+    }).filter(t => t.smartId);
+
+    if (!targets.length) { showToast('Немає лідів з Ід_смарт'); return; }
+
+    const resultEl = document.getElementById('tagResult');
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '⏳ Надсилаю тег «' + tagName + '» для ' + targets.length + ' контакт(ів)...';
+    resultEl.style.background = '#f0f9ff';
+    resultEl.style.color = '#0369a1';
+
+    let ok = 0, fail = 0;
+    let html = '';
+
+    for (const t of targets) {
+        try {
+            const res = await fetch(TAG_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: t.smartId, tagName: tagName })
+            });
+            const data = await res.json();
+            if (data.state) {
+                ok++;
+                html += '<div style="color:#059669;">✅ ' + t.name + ' <span style="color:#7c3aed;font-size:10px;">(SS: ' + t.smartId + ')</span>' + (data.note ? ' — вже був' : '') + '</div>';
+                // Оновлюємо локальне поле Тег
+                const p = passengers.find(x => x['PAX_ID'] === t.paxId);
+                if (p) {
+                    const old = p['Тег'] || '';
+                    if (!old.includes(tagName)) {
+                        p['Тег'] = old ? old + ', ' + tagName : tagName;
+                    }
+                }
+            } else {
+                fail++;
+                html += '<div style="color:#dc2626;">❌ ' + t.name + ' <span style="color:#7c3aed;font-size:10px;">(SS: ' + t.smartId + ')</span>: ' + (data.error || 'Помилка') + '</div>';
+            }
+        } catch (e) {
+            fail++;
+            html += '<div style="color:#dc2626;">❌ ' + t.name + ' <span style="color:#7c3aed;font-size:10px;">(SS: ' + t.smartId + ')</span>: ' + e.message + '</div>';
+        }
+    }
+
+    resultEl.innerHTML = '<div style="margin-bottom:6px;font-size:12px;"><b>Результат:</b> ✅ ' + ok + ' / ❌ ' + fail + '</div>' + html;
+    resultEl.style.background = fail === 0 ? '#f0fdf4' : '#fef2f2';
+    resultEl.style.color = '#1f2937';
+
+    if (ok > 0) {
+        showToast('✅ Тег «' + tagName + '» додано: ' + ok + ' контакт(ів)');
+        // Зберігаємо тег в CRM (Google Sheets) для кожного ліда
+        for (const t of targets) {
+            const p = passengers.find(x => x['PAX_ID'] === t.paxId);
+            if (p) {
+                await apiPost('updateField', { sheet: p._sheet || '', pax_id: t.paxId, col: 'Тег', value: p['Тег'] || tagName });
+            }
+        }
+        render();
+    }
 }
 
 // ── Відновлення з архіву ──
