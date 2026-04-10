@@ -2438,7 +2438,10 @@ async function apiPost(action, data) {
 // INIT
 // ================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Оновлюємо аватар, але НЕ блокуємо сторінку модалкою
+    // Автовибір менеджера при першому відкритті (без блокуючої модалки)
+    if (!getManagerName()) {
+        setManagerName(getManagerSlots()[0]);
+    }
     updateAvatarUI();
 
     showLoader('Завантаження...');
