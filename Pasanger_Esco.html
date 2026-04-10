@@ -1477,11 +1477,11 @@
 </div>
 
 <!-- MANAGER LOGIN MODAL -->
-<div class="modal-overlay" id="managerModal" onclick="if(event.target===this && getManagerName())closeModal('managerModal')">
+<div class="modal-overlay" id="managerModal" onclick="if(event.target===this)closeModal('managerModal')">
     <div class="modal" style="max-width:360px">
         <div class="modal-header">
             <div class="modal-title">👤 Вхід — оберіть менеджера</div>
-            <button class="modal-close" onclick="if(getManagerName())closeModal('managerModal')" style="display:none" id="managerModalClose">✕</button>
+            <button class="modal-close" onclick="closeModal('managerModal')" id="managerModalClose">✕</button>
         </div>
         <div style="padding:16px" id="managerSlots"></div>
         <div id="installBanner" style="display:none;padding:0 16px 16px">
@@ -2268,9 +2268,9 @@ function renderManagerSlots() {
     }
 
     document.getElementById('managerSlots').innerHTML = html;
-    // Показувати кнопку закриття тільки якщо вже увійшли
+    // Кнопка закриття завжди видима
     var closeBtn = document.getElementById('managerModalClose');
-    if (closeBtn) closeBtn.style.display = hasActive ? '' : 'none';
+    if (closeBtn) closeBtn.style.display = '';
 }
 
 function selectManager(idx) {
@@ -2438,11 +2438,8 @@ async function apiPost(action, data) {
 // INIT
 // ================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Запит менеджера при першому відкритті
+    // Оновлюємо аватар, але НЕ блокуємо сторінку модалкою
     updateAvatarUI();
-    if (!getManagerName()) {
-        openManagerModal();
-    }
 
     showLoader('Завантаження...');
     Promise.all([
